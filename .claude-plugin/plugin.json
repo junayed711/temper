@@ -1,7 +1,7 @@
 {
-  "name": "grill-to-pr",
+  "name": "temper",
   "version": "0.1.0",
-  "description": "An agent pipeline composed from Matt Pocock's engineering skills: grill the idea, write the spec, break it into tickets, build test-first, review, and open a pull request.",
+  "description": "Takes rough work from an idea to a reviewed pull request: grilled, specified, built test-first, gated and proven to run.",
   "author": {
     "name": "Junayed"
   },
