@@ -15,6 +15,11 @@ and `/to-tickets` and approved the tickets.
 Load `mattpocock-skills:grilling` and grill until the user confirms you share an
 understanding.
 
+If the grill stalls on a fact nobody in the room has — what a library actually
+does, what an API really returns — load `mattpocock-skills:research` and settle
+it before going on. Don't guess, and don't research what the grill hasn't asked
+for.
+
 Ask what existing behaviour this replaces. If it replaces any, the old
 behaviour's tests must go when the new ones arrive — say so now, while there is
 still someone to say it to.

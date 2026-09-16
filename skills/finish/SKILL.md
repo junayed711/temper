@@ -1,6 +1,6 @@
 ---
 name: finish
-description: "How a temper run ends: gates, review, security where the paths earn it, verification, and the decision to open a pull request or stop. Load at the end of every temper command."
+description: "How a temper run ends: gates, review, security where the paths earn it, verification, the decision to open a pull request or stop, and clearing the scaffolding afterwards. Load at the end of every temper command."
 ---
 
 # Finish
@@ -92,3 +92,19 @@ the user would otherwise have to reconstruct: what was asked for, what each
 commit did, every finding that didn't block, and anything left unverified.
 
 Landing it is the user's. Open the pull request; never merge it.
+
+## 7. Clear the scaffolding
+
+Only once the pull request is open. On every other ending, keep everything — a
+run that failed needs its notes most.
+
+Delete what was scaffolding; keep what was a decision.
+
+- **Research notes** — delete the files `research` wrote, once their conclusions
+  are in the PRD. A findings file left in the repo gets trusted by the next
+  reader long after it stopped being true.
+- **Tickets** — close them. Don't delete them: the tracker is the record of what
+  was done.
+- **The PRD** — keep it. It is the durable statement of why.
+
+Say what you deleted and what you left.

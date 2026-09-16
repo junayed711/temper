@@ -7,13 +7,14 @@ Three passes, in order. Don't start one until the last is done.
 ## 1. Are the skills temper depends on installed?
 
 temper sequences other people's skills; it does not carry copies of them. Check
-your available skills for all five:
+your available skills for all six:
 
 - `mattpocock-skills:grilling`
 - `mattpocock-skills:tdd`
 - `mattpocock-skills:code-review`
 - `mattpocock-skills:diagnosing-bugs`
 - `mattpocock-skills:codebase-design`
+- `mattpocock-skills:research`
 
 If any is missing, stop and tell the user to run these, then start again:
 

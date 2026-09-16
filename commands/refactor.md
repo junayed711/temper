@@ -22,6 +22,11 @@ Load `mattpocock-skills:grilling`. Settle the seam and the order callers move in
 For the vocabulary — module, interface, depth, seam — load
 `mattpocock-skills:codebase-design` as a reference.
 
+If the grill stalls on a fact nobody in the room has — what a library actually
+does, what an API really returns — load `mattpocock-skills:research` and settle
+it before going on. Don't guess, and don't research what the grill hasn't asked
+for.
+
 ## 3. Size the blast radius
 
 Ask how far the change reaches.

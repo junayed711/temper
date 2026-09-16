@@ -21,12 +21,13 @@ them, and decides whether the result is good enough to propose.
 
 ## The stages
 
-Only `grilling`, `tdd`, `code-review`, `codebase-design` and `diagnosing-bugs`
-can be invoked by an agent. The rest are yours to type, which is why `/feature`
+Only `research`, `grilling`, `tdd`, `code-review`, `codebase-design` and
+`diagnosing-bugs` can be invoked by an agent. The rest are yours to type, which is why `/feature`
 has to stop in the middle rather than run straight through.
 
 | # | Stage | Skill | Who runs it |
 |---|-------|-------|-------------|
+| 0 | Settle a fact the grill stalls on | `research` | agent |
 | 1 | Sharpen the idea | `grilling` | agent or you |
 | 2 | Write the spec | `/to-spec` | you |
 | 3 | Break it into tickets | `/to-tickets` | you |
@@ -76,8 +77,7 @@ The gaps in the chain above, in rough order of value:
    worktrees.
 2. **A comments pass.** The Standards axis catches smells, not comments that restate
    the code beneath them.
-3. **Cleanup.** Nothing closes or removes what a run created.
-4. **Resuming.** A run that stops has to be restarted by hand.
+3. **Resuming.** A run that stops has to be restarted by hand.
 
 ## Install
 
