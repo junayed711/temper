@@ -12,9 +12,10 @@ them, and decides whether the result is good enough to propose.
 
 ## Requires
 
-- [`mattpocock-skills`](https://github.com/mattpocock/skills) installed. A Claude
+- [`mattpocock-skills`](https://github.com/mattpocock/skills) and
+  [`pstack`](https://github.com/michael-denyer/pstack-claude) installed. A Claude
   Code plugin can't declare a dependency on another, so this is on you — but
-  `/temper:setup` checks for it and refuses to go further if it's missing.
+  `/temper:setup` checks for both and refuses to go further if either is missing.
 - `/setup-matt-pocock-skills` run once in the target repo. It writes
   `docs/agents/issue-tracker.md`, which `to-spec`, `to-tickets` and `code-review`
   all read. Without it those three stop and ask for it.
@@ -56,9 +57,10 @@ smells). Neither axis is allowed to mask the other.
 The review itself is Matt's `code-review`; `/review` only wraps it in the gates
 and a verification run, and stops instead of proposing.
 
-Every command above ends by loading the `finish` skill, which runs the gates,
-calls `code-review`, runs a security pass when the branch touches a risky path,
-verifies, and either opens a pull request or says why it didn't.
+Every command above ends by loading the `finish` skill: gates, review on two axes
+with a security pass when the paths earn it, a comments pass, verification, then
+either a pull request or an explanation of why there isn't one. Any fix made
+along the way sends it back to the gates before anything else counts.
 
 `/feature` stops once and hands you `/to-spec` and `/to-tickets`, because only
 you can run those. `/refactor` does the same when the blast radius is wide enough
@@ -75,9 +77,8 @@ The gaps in the chain above, in rough order of value:
 
 1. **Parallel builds.** Tickets are worked one at a time, in one session. No
    worktrees.
-2. **A comments pass.** The Standards axis catches smells, not comments that restate
-   the code beneath them.
-3. **Resuming.** A run that stops has to be restarted by hand.
+2. **Resuming.** A run that stops has to be restarted by hand — the stop report
+   says where it got to, but you drive it from there.
 
 ## Install
 

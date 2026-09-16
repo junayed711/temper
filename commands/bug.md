@@ -19,6 +19,9 @@ A cause the user suspects is their hypothesis, not a finding. Record it as such.
 If the cause isn't obvious from the grill, load `mattpocock-skills:diagnosing-bugs`.
 If it is obvious, skip this.
 
+The end of the grill is the **start line**. From it until the pull request, ask
+nothing. A bug has no typed-only step, so everything below runs without stopping.
+
 ## 3. Fix it test-first
 
 Load `mattpocock-skills:tdd`. The failing test is the reproduction: write it

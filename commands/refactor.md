@@ -18,6 +18,11 @@ learn early that the work cannot be proved.
 
 ## 2. Grill
 
+Before the first question, read the part of the codebase the ask touches —
+load `pstack:how`. `grilling` dispatches sub-agents for facts a question needs,
+but it can only do that once the question exists; this is what makes the first
+round concrete instead of generic.
+
 Load `mattpocock-skills:grilling`. Settle the seam and the order callers move in.
 For the vocabulary — module, interface, depth, seam — load
 `mattpocock-skills:codebase-design` as a reference.
