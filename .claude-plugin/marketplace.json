@@ -1,0 +1,15 @@
+{
+  "name": "grill-to-pr",
+  "owner": {
+    "name": "Junayed"
+  },
+  "description": "The grill-to-pr agent pipeline, as a local Claude Code plugin marketplace.",
+  "plugins": [
+    {
+      "name": "grill-to-pr",
+      "source": "./",
+      "description": "Grill, spec and ticket the work with the human, then build it test-first, review it and open a pull request.",
+      "category": "engineering"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "grill-to-pr",
+  "version": "0.1.0",
+  "description": "An agent pipeline composed from Matt Pocock's engineering skills: grill the idea, write the spec, break it into tickets, build test-first, review, and open a pull request.",
+  "author": {
+    "name": "Junayed"
+  },
+  "license": "MIT",
+  "keywords": ["workflow", "orchestration", "tdd", "code-review", "grilling"]
+}
