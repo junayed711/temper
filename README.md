@@ -52,10 +52,12 @@ smells). Neither axis is allowed to mask the other.
 | `/temper:refactor` | The same behaviour in a different shape |
 | `/temper:review` | Work that already exists |
 
-The review itself is Matt's `/code-review`; `/review` only wraps it in the gates
-and a verification run, and stops instead of proposing. Every command above ends by loading the `finish` skill, which runs the
-gates, calls `/code-review`, verifies, and either opens a pull request or says
-why it didn't.
+The review itself is Matt's `code-review`; `/review` only wraps it in the gates
+and a verification run, and stops instead of proposing.
+
+Every command above ends by loading the `finish` skill, which runs the gates,
+calls `code-review`, runs a security pass when the branch touches a risky path,
+verifies, and either opens a pull request or says why it didn't.
 
 `/feature` stops once and hands you `/to-spec` and `/to-tickets`, because only
 you can run those. `/refactor` does the same when the blast radius is wide enough
@@ -74,9 +76,8 @@ The gaps in the chain above, in rough order of value:
    worktrees.
 2. **A comments pass.** The Standards axis catches smells, not comments that restate
    the code beneath them.
-3. **Security review.** Nothing looks at a diff adversarially, on any path.
-4. **Cleanup.** Nothing closes or removes what a run created.
-5. **Resuming.** A run that stops has to be restarted by hand.
+3. **Cleanup.** Nothing closes or removes what a run created.
+4. **Resuming.** A run that stops has to be restarted by hand.
 
 ## Install
 

@@ -43,8 +43,9 @@ accept it in a word.
 
 - **Gates** — the commands that must pass before work is proposed, in the order
   they should run. Read the package scripts and CI workflows rather than guessing.
-- **Risky paths** — globs where a change deserves a closer look: auth, money,
-  migrations, crypto, anything append-only.
+- **Risky paths** — globs where a change earns a security review: auth, money,
+  migrations, crypto, anything append-only. Name the skill or doc that says what
+  each one protects, or `none` if the repo has none to protect.
 - **Verify** — the command or skill that proves the app actually runs, or `none`.
 - **Commits** — the repo's commit message rules, or `none`.
 
