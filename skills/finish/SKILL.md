@@ -26,22 +26,44 @@ picks it up from there.
 
 Done when that's reported.
 
-## 1. Gather the description
+## 1. Write the description
 
-Everything that has to outlive the run, taken now — the next step deletes
-`.scratch/`:
+Everything that has to outlive the run, taken now, because the next step deletes
+`.scratch/`. If the user's or the repo's instructions say how to write a pull
+request, follow them. Otherwise, write it for someone who doesn't work on the code:
+the summary first, then the record.
 
-1. **Not checked**, first — a security pass that didn't run on a risky path leads.
-2. **What was asked**, in a few lines from `.scratch/<slug>/spec.md`.
-3. **What changed**: each commit's subject, in order.
-4. Every **ruling** — what was decided, why, and what it costs if it was wrong —
-   plus, by kind, the **root cause** or the **baseline** proof.
-5. **How it was checked**: gates, each seat's outcome, verify.
-6. **Not blocking**: each finding with its seat and rating.
+```markdown
+One sentence in plain words: what changes, and why it matters.
 
-Write it to a file outside the repo: `mktemp`.
+**What changes**
 
-Done when the file holds every section that applies.
+- Three to five short bullets, from the commits, in plain words.
+
+**Heads up**
+
+- A security pass that didn't run on a risky path, first.
+- Every ruling that costs something if it was wrong, in a line each.
+
+<details><summary>Details</summary>
+
+**What was asked**: a few lines from `.scratch/<slug>/spec.md`.
+
+**Rulings**: every decision made, why, and what it costs if it was wrong.
+
+**Root cause** for a bug, or **baseline** proof for a refactor.
+
+**How it was checked**: gates, each seat's outcome, verify.
+
+**Not blocking**: each finding with its seat and rating.
+
+</details>
+```
+
+Skip Heads up when there's nothing for it. The title is short, plain and names the
+change. Write the file outside the repo: `mktemp`.
+
+Done when the file holds every part that applies.
 
 ## 2. Clear the scratch folder
 
@@ -63,8 +85,8 @@ Done when every gate passes against `HEAD`.
 1. `git push -u origin <branch>`.
 2. `gh pr list --head <branch> --state open --json url`. If one is open, the push
    has updated it: report its URL.
-3. Otherwise `gh pr create --base <default branch> --head <branch> --title <title>
-   --body-file <file>`, with a title that follows the Commits field.
+3. Otherwise open it:
+   `gh pr create --base <default branch> --head <branch> --title <title> --body-file <file>`.
 
 The pull request is the user's to review and merge; the worktree stays for their
 feedback.

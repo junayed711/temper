@@ -458,7 +458,7 @@ Every command except `/review` finishes with the same two skills.
 The security pass reports one of three outcomes: ran and clean, ran with
 findings, or **not run** — with the reason. A review that found nothing to look
 at counts as not run, never as clean. Not run on a risky path doesn't block the
-pull request, but it leads the description.
+pull request, but it's the first thing under Heads up in the description.
 
 In `/review`, `check` never fixes anything and never loops.
 
@@ -466,12 +466,15 @@ In `/review`, `check` never fixes anything and never loops.
 
 Only when `check` comes out clean:
 
-1. Gather what has to outlive the run: the spec in brief, every decision
-   Superpowers made on your behalf, findings that didn't block, and anything
-   that wasn't checked.
+1. Write the description while `.scratch/` still exists. It opens with a plain
+   summary: one sentence, what changes, and a Heads up for anything not checked
+   or risky if wrong. The full record (the spec in brief, every decision
+   Superpowers made on your behalf, how it was checked, findings that didn't
+   block) sits in a collapsed Details section below. Your own or the repo's pull
+   request rules win over this layout.
 2. Delete `.scratch/<slug>/` and commit.
 3. Run the gates again, because that deletion is a change.
-4. Push the branch and open the pull request, titled by the repo's commit rules.
+4. Push the branch and open the pull request.
 
 It never merges.
 
