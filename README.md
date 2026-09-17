@@ -131,26 +131,22 @@ That turns on its dependencies for the repo as well, and writes them to the repo
 
 ## Set up a repo
 
-Once per repo, from its main checkout:
-
-1. **`/setup-matt-pocock-skills`** — and choose **Local markdown** as the issue
-   tracker. temper keeps its specs and plans in `.scratch/`, so it won't work
-   with GitHub issues.
-2. **`/temper:setup`** — checks the skills are installed, that the tracker is
-   local markdown, and that `.scratch/` isn't gitignored. Then it proposes a
-   `## temper` section for the repo's `CLAUDE.md` and writes it once you agree:
+Once per repo, from its main checkout, run **`/temper:setup`**. It checks the
+skills are installed and that `.scratch/` isn't gitignored. Then it proposes
+`.claude/temper.md` and writes it once you agree:
 
 ```markdown
-## temper
+# temper
 
-- Worktrees: all work happens in a worktree created from main.
-- Superpowers: in temper runs, grilling and /to-spec replace brainstorming,
-  and temper's finish replaces finishing-a-development-branch.
 - Gates: pnpm typecheck; pnpm lint; pnpm test
 - Risky paths: packages/auth/** (the ledger skill); packages/db/drizzle/** (none)
 - Verify: pnpm test:live
 - Commits: lowercase subject only, at most 80 characters
 ```
+
+Commit it, so every worktree has it. temper keeps its settings in its own file, so
+the repo's `CLAUDE.md` never has to mention a workflow. There's no need to run
+`/setup-matt-pocock-skills`: each run tells Matt's skills to write to `.scratch/`.
 
 Gates, Verify and Commits each take `none` rather than being left empty, so a
 repo with no gates says so instead of silently passing. Run it again whenever
@@ -266,16 +262,13 @@ Uninstalling leaves every repo's own files as they were. In each one:
   `mattpocock-skills@claude-plugins-official` and
   `superpowers@claude-plugins-official` from `enabledPlugins`, then commit. They
   stay listed after an uninstall.
-- **`CLAUDE.md` or `AGENTS.md`** — delete the `## temper` section.
+- **`.claude/temper.md`** — delete it, then commit.
 - **Runs that didn't finish** — `git worktree list` shows any left under
   `.claude/worktrees/`, each on a `feat/`, `fix/` or `refactor/` branch holding its
   `.scratch/` folder. Once you've saved anything you want from one, remove it with
   `git worktree remove .claude/worktrees/<slug>`, then delete its branch.
 - **`.superpowers/`** — a build that stopped partway through can leave its
   workspace here. It's gitignored, so delete the folder.
-
-Matt's `docs/agents/issue-tracker.md` belongs to his skills, not temper; keep it if
-you still use them.
 
 ## Workflows
 
@@ -486,7 +479,7 @@ It never merges.
 | Branch | `feat/`, `fix/` or `refactor/` + slug | until merged |
 | Spec, plan, research notes, baseline | `.scratch/<slug>/` | committed on the branch, deleted before the PR |
 | Build ledger | `.superpowers/sdd/<plan>/` | Superpowers' own, gitignored, deleted when its build finishes |
-| Repo config | the `## temper` section of `CLAUDE.md` | permanent |
+| Repo config | `.claude/temper.md` | permanent |
 
 ## Design decisions
 
@@ -511,6 +504,10 @@ It never merges.
   staying green. Wide refactors are rare enough to do by hand.
 - **One task at a time.** Parallel builds need integration and conflict handling
   that nothing yet has justified.
+- **Nothing in `CLAUDE.md`.** A repo's instructions describe the repo, not the
+  workflow used on it. temper's settings live in `.claude/temper.md`, and each
+  command carries its own rules. The cost: those rules aren't always loaded the
+  way `CLAUDE.md` is.
 - **No pstack.** See Requirements.
 
 ### Living alongside Superpowers
@@ -518,17 +515,18 @@ It never merges.
 Superpowers reinjects its own rules at the start of every session and after
 every compaction, and its build loop ends by handing off to its own finish —
 which asks you whether to merge, open a PR or keep the branch. temper guards
-that hand-off three ways: the override lives in `CLAUDE.md`, which is always
-loaded; temper pins the same rule into the plan file, which the build loop's
-ledger points a recovering session back to; and Superpowers is enabled only in
-repos that use temper.
+that hand-off three ways: `/temper:feature` tells the build loop to hand back;
+temper pins the same rule into the plan file, which the build loop's ledger points
+a recovering session back to; and Superpowers is enabled only in repos that use
+temper.
 
 ## Not yet proven
 
 Everything above has been designed and checked against the skills' source, but
 not run. These can only be settled by a real run:
 
-1. Superpowers respects the `CLAUDE.md` override at the end of its build loop.
+1. Superpowers hands back to temper at the end of its build loop, with the rule
+   in the command and the plan rather than in `CLAUDE.md`.
 2. The rule pinned in `plan.md` still holds after a long session compacts.
 3. `security-review` reviews a committed range rather than only uncommitted work.
 4. Enabling temper per repo keeps Superpowers' session instructions out of other
