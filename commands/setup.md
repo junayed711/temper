@@ -16,8 +16,9 @@ Check your available skills for every one of these:
 | `mattpocock-skills` | `grilling`, `research`, `code-review`, `codebase-design` |
 | `superpowers` | `writing-plans`, `subagent-driven-development`, `systematic-debugging`, `requesting-code-review`, `test-driven-development`, `verification-before-completion` |
 
-`/to-spec` is absent from that list by design — only a person can run it — and it
-ships in the same plugin as `grilling`, so finding `grilling` covers it.
+`/to-spec` and `/to-tickets` are absent from that list by design — only a person
+can run them — and they ship in the same plugin as `grilling`, so finding
+`grilling` covers them.
 
 If any skill is missing, stop. Name each missing one and give the install lines:
 
