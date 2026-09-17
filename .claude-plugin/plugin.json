@@ -1,10 +1,12 @@
 {
   "name": "temper",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Takes rough work from an idea to a reviewed pull request: grilled and specified with Matt Pocock's skills, planned and built with Superpowers, then gated, reviewed and verified.",
   "author": {
     "name": "Junayed"
   },
+  "homepage": "https://github.com/junayed711/temper",
+  "repository": "https://github.com/junayed711/temper",
   "license": "MIT",
   "keywords": [
     "workflow",
@@ -13,5 +15,15 @@
     "code-review",
     "grilling",
     "superpowers"
+  ],
+  "dependencies": [
+    {
+      "name": "mattpocock-skills",
+      "marketplace": "claude-plugins-official"
+    },
+    {
+      "name": "superpowers",
+      "marketplace": "claude-plugins-official"
+    }
   ]
 }
