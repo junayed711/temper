@@ -58,9 +58,55 @@ If you already have Matt's skills from his own marketplace, uninstall that copy
 first with `/plugin uninstall mattpocock-skills@mattpocock`, so there aren't two
 copies of the same skills.
 
-The same commands work from a terminal as `claude plugin …`. To install from a
-local clone instead, pass its path to `marketplace add`. Start a new session
+The same commands work from a terminal as `claude plugin …`. Start a new session
 afterwards; a running session doesn't pick up new skills.
+
+### From a clone
+
+If you've cloned the repo — because temper isn't in a marketplace yet, or because
+you're working on it — there are two ways to run it.
+
+**Install it from the clone.** It stays installed, and its dependencies install with
+it:
+
+```
+claude plugin marketplace add /path/to/temper
+claude plugin install temper@temper
+```
+
+The clone acts as the marketplace, so it installs whichever branch is checked out —
+usually `main`. If you've already added temper's marketplace from GitHub, remove it
+first with `claude plugin marketplace remove temper`, since both are named `temper`.
+
+Installing takes a copy, so later changes in the clone don't reach it on their own.
+After a `git pull`, bring them in with:
+
+```
+claude plugin marketplace update temper
+claude plugin update temper@temper
+```
+
+That only takes effect when the pull changed the version in
+`.claude-plugin/plugin.json` — the same version counts as up to date. Restart the
+session afterwards.
+
+**Load it for one session.** Nothing is installed, and changes in the clone apply as
+you make them: run `/reload-plugins` to pick them up.
+
+```
+claude --plugin-dir /path/to/temper
+```
+
+Use this while changing temper itself. It doesn't install dependencies, so Matt's
+skills and Superpowers need to be installed already:
+
+```
+claude plugin install mattpocock-skills@claude-plugins-official
+claude plugin install superpowers@claude-plugins-official
+```
+
+If temper is also installed, the copy loaded this way takes precedence for that
+session.
 
 ### Keep it to the repos that use it
 
