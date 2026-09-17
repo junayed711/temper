@@ -33,7 +33,7 @@ recommend `/temper:feature`. Either way, tell the user the worktree is still emp
 and that you'll remove it if they ask.
 
 Write the four answers, and any hypothesis, to `.scratch/<slug>/spec.md`, and
-commit it following the Commits field of the repo's `## temper` section.
+commit it following the Commits field of the repo's `.claude/temper.md`.
 
 Done when the user has confirmed the four answers and `spec.md` is committed.
 

@@ -27,7 +27,8 @@ Done when the session is in `.claude/worktrees/<slug>` on the branch `feat/<slug
 ### A2. The grill
 
 Load `mattpocock-skills:grilling` and grill until the user confirms you share an
-understanding.
+understanding. The grill takes the place of `superpowers:brainstorming` in a temper
+run; don't load it.
 
 When a question turns on a fact nobody in the conversation has — what a library
 actually does, what an API really returns — load `mattpocock-skills:research` to
@@ -47,8 +48,9 @@ Done when the user confirms you share an understanding, or the run has ended.
 
 Tell the user, then stop:
 
-1. Type **`/to-spec`**. It writes the spec to `.scratch/<slug>/spec.md` — give
-   the real slug and path, so it lands where part B looks.
+1. Type **`/to-spec`**. In a temper run the issue tracker is local markdown, so
+   it writes the spec to `.scratch/<slug>/spec.md` and nowhere else — give the
+   real slug and path, so it lands where part B looks.
 2. Then type **`/temper:feature build`**.
 
 Done when the user has those two instructions.
@@ -71,7 +73,7 @@ previous build stopped partway through. Ask whether to keep them — committed,
 following the Commits field — or discard them.
 
 Commit the spec and research notes following the Commits field of the repo's
-`## temper` section.
+`.claude/temper.md`.
 
 If `.scratch/<slug>/plan.md` already exists, this is a resumed build: go to B4.
 
@@ -119,7 +121,9 @@ Done when the user says go.
 ### B5. Build
 
 Load `superpowers:subagent-driven-development` on `.scratch/<slug>/plan.md`. The
-worktree already exists; it works in this one.
+worktree already exists; it works in this one. When its final review is clean it
+hands back here, as the plan's "Handing back to temper" section says, and doesn't
+load `superpowers:finishing-a-development-branch`.
 
 Keep its final message's list of **rulings** — its ledger is deleted when it
 finishes, so that message is the only copy.

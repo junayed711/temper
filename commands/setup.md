@@ -1,5 +1,5 @@
 ---
-description: "Check a repo is ready for temper and write its ## temper section. Run once per repo."
+description: "Check a repo is ready for temper and write its .claude/temper.md. Run once per repo."
 ---
 
 # temper setup
@@ -47,26 +47,22 @@ Four more checks:
 
 Done when every skill in the table is present and `gh` is signed in.
 
-## 2. The issue tracker
+## 2. Where specs go
 
 temper keeps each run's spec and plan in `.scratch/<slug>/`, committed on the
-branch and deleted before the pull request. That needs Matt's local markdown
-tracker, and a `.scratch/` git can see.
+branch and deleted before the pull request. Each run tells Matt's skills to write
+there, so the repo needs no issue tracker setup of its own, only a `.scratch/` git
+can see.
 
-- **`docs/agents/issue-tracker.md`** missing → stop. The user runs
-  `/setup-matt-pocock-skills` and chooses **Local markdown**.
-- **The tracker it describes** keeps issues somewhere other than
-  `.scratch/<feature-slug>/` → stop. Explain why temper needs local markdown, and
-  that switching means running `/setup-matt-pocock-skills` again.
 - **`git check-ignore -v .scratch/probe`** prints a rule → stop. Show the rule and
   the file it's in; `.scratch/` has to be committable.
 
-Done when all three pass.
+Done when it passes.
 
-## 3. The `## temper` section
+## 3. `.claude/temper.md`
 
-Use the root `CLAUDE.md` if it exists, otherwise `AGENTS.md`. If neither exists,
-propose creating `CLAUDE.md`.
+temper keeps a repo's settings in their own file, so the repo's `CLAUDE.md` or
+`AGENTS.md` never has to mention it.
 
 Work out each field from the repo itself:
 
@@ -82,30 +78,25 @@ Work out each field from the repo itself:
 - **Commits** — the repo's documented commit message rules, or the convention
   `git log` shows consistently.
 
-Propose the whole section in exactly this shape, and for each value say where it
-came from, so the user can accept it in a word:
+Propose the whole file in exactly this shape, and for each value say where it came
+from, so the user can accept it in a word:
 
 ```markdown
-## temper
+# temper
 
-- Worktrees: all work happens in a worktree created from <default branch>.
-- Superpowers: in temper runs, grilling and /to-spec replace brainstorming, and temper's finish replaces finishing-a-development-branch.
 - Gates: <command>; <command>
 - Risky paths: <glob> (<skill or doc>); <glob> (none)
 - Verify: <command or skill>
 - Commits: <rules>
 ```
 
-Every field carries a value: a field with nothing to put in it says `none`. The
-Worktrees and Superpowers lines are fixed wording; they make temper's rules
-project instructions, which Claude Code and Superpowers both rank above their own
-defaults.
+Every field carries a value: a field with nothing to put in it says `none`.
 
-If the section already exists, show the differences field by field and change only
+If the file already exists, show the differences field by field and change only
 what the user confirms.
 
-Write the section once the user confirms it. Leave it uncommitted, and tell the
-user to commit it through their usual process: temper commands start only from a
-clean tree.
+Write the file once the user confirms it. Leave it uncommitted, and tell the user
+to commit it through their usual process: temper commands start only from a clean
+tree, and every worktree reads the committed copy.
 
-Done when the section is written and every field has a value.
+Done when the file is written and every field has a value.

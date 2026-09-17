@@ -31,8 +31,7 @@ Check all four. Report every one that fails, each with its fix, then stop.
 - **On the default branch** — `git branch --show-current` prints it. Fix: switch
   to it.
 - **Clean tree** — `git status --porcelain` prints nothing. Fix: commit or stash.
-- **Configured** — the root `CLAUDE.md` or `AGENTS.md` has a `## temper` section.
-  Fix: `/temper:setup`.
+- **Configured** — `.claude/temper.md` exists. Fix: `/temper:setup`.
 
 Done when all four pass.
 
