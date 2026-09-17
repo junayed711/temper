@@ -1,10 +1,17 @@
 {
   "name": "temper",
-  "version": "0.1.0",
-  "description": "Takes rough work from an idea to a reviewed pull request: grilled, specified, built test-first, gated and proven to run.",
+  "version": "0.2.0",
+  "description": "Takes rough work from an idea to a reviewed pull request: grilled and specified with Matt Pocock's skills, planned and built with Superpowers, then gated, reviewed and verified.",
   "author": {
     "name": "Junayed"
   },
   "license": "MIT",
-  "keywords": ["workflow", "orchestration", "tdd", "code-review", "grilling"]
+  "keywords": [
+    "workflow",
+    "orchestration",
+    "tdd",
+    "code-review",
+    "grilling",
+    "superpowers"
+  ]
 }

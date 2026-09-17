@@ -6,10 +6,6 @@ Tempering is the step that turns hard-but-brittle metal into something tough.
 Rough work goes under heat, gets shaped, and has to prove it won't shatter before
 it gets out.
 
-> **Status: design.** This README is the design the plugin is being rebuilt to.
-> Until that lands, the files under `commands/` and `skills/` still reflect the
-> earlier version.
-
 ## How it's put together
 
 temper writes almost none of the thinking. It sequences skills that already
