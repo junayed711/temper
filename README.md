@@ -15,10 +15,10 @@ is good enough to propose.
 
 | Part of the job | Comes from | Skills |
 |---|---|---|
-| Shaping the work | [Matt Pocock's skills](https://github.com/mattpocock/skills) | `grilling`, `research`, `to-spec`, `code-review`, `codebase-design` |
+| Shaping the work | [Matt Pocock's skills](https://github.com/mattpocock/skills) | `grilling`, `research`, `to-spec`, `to-tickets`, `code-review`, `codebase-design` |
 | Building it | [Superpowers](https://github.com/obra/superpowers) | `writing-plans`, `subagent-driven-development`, `systematic-debugging`, `requesting-code-review` |
 | Isolation and security | Claude Code itself | `EnterWorktree`, `security-review` |
-| Gates, review panel, proposing | temper | `start`, `check`, `finish`, and one agent: `comments-reviewer` |
+| Gates, refactor steps, review panel, proposing | temper | `start`, `baseline`, `reshape`, `check`, `finish`, and one agent: `comments-reviewer` |
 
 The rule behind every choice: if a skill already does the job, use it. temper
 has exactly one agent of its own, because the only existing comments pass
@@ -197,7 +197,31 @@ anything moves, it confirms the tests actually cover the code that's moving — 
 green suite over untested code proves nothing. Then it moves the code in small
 steps with the tests green after each.
 **Narrow refactors only**: if the grill finds the change fans out across the
-codebase, the run stops and says so.
+codebase, the run stops and points you to `/temper:overhaul`.
+
+### Reshape code across the codebase
+
+```
+/temper:overhaul split the api package into per-surface packages
+```
+
+A refactor too wide for one pull request becomes a plan of small ones.
+
+1. Confirm the name it proposes — the **effort**. Keep it short; every step is
+   named after it.
+2. Answer the grill: the target shape, the seams, and which callers move in which
+   batches.
+3. Type **`/to-tickets`**. Matt's skill proposes the steps — add the new shape
+   beside the old, move callers across in batches, delete the old — and you agree
+   the breakdown.
+4. Type **`/temper:overhaul publish`**. It opens a pull request with just the plan,
+   in `.scratch/<effort>/issues/`. Merge it.
+5. From the main checkout, type **`/temper:overhaul next <effort>`**. It picks the
+   first ticket nothing is waiting on, confirms it with you, and runs it as a
+   narrow refactor: baseline, pin, move, check, pull request. The pull request
+   marks the ticket done.
+6. Merge, pull, and run `next` again. The last ticket's pull request deletes the
+   plan.
 
 ### Review work that already exists
 
@@ -227,6 +251,8 @@ report says what stopped it and where it got to.
 - **A feature** resumes from where it stopped — run `/temper:feature build`
   again in the same worktree. Superpowers keeps a ledger of finished tasks.
 - **A bug or refactor** has no resume; the report tells you what's done.
+- **An overhaul step** has no resume either, but the plan is untouched: the
+  ticket stays open until a pull request that marks it done is merged.
 
 ### After the pull request
 
@@ -263,6 +289,8 @@ Uninstalling leaves every repo's own files as they were. In each one:
   `superpowers@claude-plugins-official` from `enabledPlugins`, then commit. They
   stay listed after an uninstall.
 - **`.claude/temper.md`** — delete it, then commit.
+- **An overhaul that didn't finish** — its plan is still committed in
+  `.scratch/<effort>/`. Delete the folder, then commit.
 - **Runs that didn't finish** — `git worktree list` shows any left under
   `.claude/worktrees/`, each on a `feat/`, `fix/` or `refactor/` branch holding its
   `.scratch/` folder. Once you've saved anything you want from one, remove it with
@@ -380,6 +408,46 @@ flowchart TD
     classDef temper fill:#F1EFE8,stroke:#5F5E5A,color:#2C2C2A
 ```
 
+### `/temper:overhaul`
+
+Planned once, then one ticket per pull request until the plan is gone.
+
+```mermaid
+flowchart TD
+    wt["Worktree from main<br/>EnterWorktree, branch renamed refactor/effort"]:::temper
+    grill["Grill the target shape<br/>grilling, codebase-design<br/>stops if one run is enough"]:::matt
+    tickets(["You type /to-tickets<br/>expand, migrate in batches, contract"]):::you
+    publish["Publish<br/>checks each ticket lands alone, opens the plan's PR"]:::temper
+    mergeplan(["You merge the plan"]):::you
+    next["next effort<br/>first ticket nothing waits on, confirmed with you"]:::temper
+    wt2["Worktree from main<br/>branch refactor/effort-NN"]:::temper
+    base["Baseline<br/>gates green, output recorded"]:::temper
+    pin["The pin<br/>a test covers everything that moves"]:::temper
+    go(["Start line: nothing is asked after this"]):::temper
+    move["Move what the ticket names<br/>tests green after each step"]:::temper
+    mark["Mark the ticket done<br/>or delete the plan on the last one"]:::temper
+
+    subgraph panel["Gates, review and verify — as /temper:refactor"]
+        direction LR
+        r1["standards<br/>code-review"]:::matt
+        r2["spec<br/>code-review"]:::matt
+        r3["comments<br/>comments-reviewer"]:::temper
+        r4["security, if risky<br/>security-review"]:::matt
+        r5["quality<br/>requesting-code-review"]:::sp
+        r1 ~~~ r2 ~~~ r3 ~~~ r4 ~~~ r5
+    end
+
+    pr["Clear the step's .scratch, open the PR"]:::temper
+    merge(["You merge, then run next again<br/>until the plan is gone"]):::you
+
+    wt --> grill --> tickets --> publish --> mergeplan --> next --> wt2 --> base --> pin --> go --> move --> mark --> panel --> pr --> merge
+
+    classDef matt fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    classDef sp fill:#FAECE7,stroke:#993C1D,color:#4A1B0C
+    classDef you fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+    classDef temper fill:#F1EFE8,stroke:#5F5E5A,color:#2C2C2A
+```
+
 ### `/temper:review`
 
 ```mermaid
@@ -414,15 +482,15 @@ flowchart TD
 
 ### Side by side
 
-| | `/feature` | `/bug` | `/refactor` | `/review` |
-|---|---|---|---|---|
-| Branch | `feat/<slug>` | `fix/<slug>` | `refactor/<slug>` | the one you're in |
-| You type a command | `/to-spec` | — | — | — |
-| Last question | okay the task list | end of the grill | end of the grill | the intent |
-| Built by | Superpowers' build loop | `systematic-debugging` | temper, inline | nothing |
-| Review seats | 4 | 5 | 5 | 5 |
-| Fixes return to the gates | yes | yes | yes | no |
-| Ends in | a pull request | a pull request | a pull request | a verdict |
+| | `/feature` | `/bug` | `/refactor` | `/overhaul` | `/review` |
+|---|---|---|---|---|---|
+| Branch | `feat/<slug>` | `fix/<slug>` | `refactor/<slug>` | `refactor/<effort>`, then `refactor/<effort>-<NN>` | the one you're in |
+| You type a command | `/to-spec` | — | — | `/to-tickets` | — |
+| Last question | okay the task list | end of the grill | end of the grill | run this ticket? | the intent |
+| Built by | Superpowers' build loop | `systematic-debugging` | temper, inline | temper, inline, a ticket at a time | nothing |
+| Review seats | 4 | 5 | 5 | 5 per ticket | 5 |
+| Fixes return to the gates | yes | yes | yes | yes | no |
+| Ends in | a pull request | a pull request | a pull request | a plan PR, then one PR per ticket | a verdict |
 
 `/feature` has four review seats rather than five because Superpowers' build loop
 already ran the quality review on the whole branch.
@@ -479,6 +547,7 @@ It never merges.
 | Branch | `feat/`, `fix/` or `refactor/` + slug | until merged |
 | Spec, plan, research notes, baseline | `.scratch/<slug>/` | committed on the branch, deleted before the PR |
 | Build ledger | `.superpowers/sdd/<plan>/` | Superpowers' own, gitignored, deleted when its build finishes |
+| Overhaul plan | `.scratch/<effort>/issues/` | committed on the default branch, deleted by the last ticket's PR |
 | Repo config | `.claude/temper.md` | permanent |
 
 ## Design decisions
@@ -487,9 +556,9 @@ It never merges.
   available for deciding *what*; Superpowers' build loop — fresh agent per task,
   review after each, a ledger that survives a long session — is the best for
   *how*. temper doesn't rewrite either.
-- **`/to-tickets` was replaced by `writing-plans`.** Superpowers' build loop reads
-  one plan file, not a folder of tickets. It also leaves `/to-spec` as the only
-  command you have to type.
+- **Features use `writing-plans`, not `/to-tickets`.** Superpowers' build loop
+  reads one plan file, not a folder of tickets. `/to-tickets` is used only by
+  `/temper:overhaul`, where each ticket becomes its own pull request.
 - **Specs and plans are deleted before the PR.** Documents left in the repo get
   trusted long after they stop being true. The pull request carries what needs
   to last, attached to the change it explains.
@@ -499,9 +568,16 @@ It never merges.
   whole day; a wrong decision recorded in the PR costs a review comment.
 - **Fixes go back through the gates.** A fix is a new commit, so the gates you
   ran no longer describe what would be pushed.
-- **Refactors are narrow only.** `writing-plans` makes every task a failing test
-  first, and a refactor's middle steps add no tests — their proof is the baseline
-  staying green. Wide refactors are rare enough to do by hand.
+- **A refactor never goes through `writing-plans`.** It makes every task a failing
+  test first, and a refactor's steps add no tests — their proof is the baseline
+  staying green. So temper moves the code itself, one narrow run at a time.
+- **A wide refactor is a series of narrow ones.** `/temper:overhaul` plans it with
+  `/to-tickets` as expand, migrate in batches, contract, and runs each ticket as its
+  own pull request. Every merge leaves the default branch working, the reviews stay
+  small, and the work can pause between any two tickets.
+- **An overhaul's plan is committed while it runs.** Every step starts from the
+  default branch, so the plan has to be there. It's the one document temper leaves
+  in the repo past a pull request, and the last ticket's pull request deletes it.
 - **One task at a time.** Parallel builds need integration and conflict handling
   that nothing yet has justified.
 - **Nothing in `CLAUDE.md`.** A repo's instructions describe the repo, not the
@@ -533,11 +609,14 @@ not run. These can only be settled by a real run:
    repos. Per-repo enabling of a plugin and its dependencies was tested with
    stand-in plugins; Superpowers' own hook wasn't.
 5. `EnterWorktree` works when called from inside a plugin command.
+6. `/to-tickets` writes to `.scratch/<effort>/issues/` when told so in the
+   conversation, without `/setup-matt-pocock-skills` having configured a tracker.
 
 ## Not supported
 
 - **Parallel builds.** One task at a time.
-- **Wide refactors.** Changes that fan out across the codebase.
+- **Refactors that can't land in green steps.** A wide change whose batches only
+  pass together, on a shared integration branch.
 - **GitHub or GitLab issue trackers.** Four things depend on local markdown:
   where tickets live, how status is recorded, how `code-review` finds the spec,
   and what gets deleted before the PR.
@@ -553,9 +632,12 @@ temper/
 │   ├── feature.md
 │   ├── bug.md
 │   ├── refactor.md
+│   ├── overhaul.md
 │   └── review.md
 ├── skills/
 │   ├── start/               worktree from main, branch named for the work
+│   ├── baseline/            a refactor's before: the gates, caching off
+│   ├── reshape/             the pin, then the move in green steps
 │   ├── check/               gates, review panel, fixes, verify, the decision
 │   └── finish/              clear .scratch, gate again, open the PR
 └── agents/
