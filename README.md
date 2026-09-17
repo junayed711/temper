@@ -128,9 +128,10 @@ not a bug, and it says so.
 /temper:refactor pull the scoring rules out of reconcile.ts
 ```
 
-It checks first that the tests pass **and** actually cover the code in question —
-a green suite over untested code proves nothing. Then a grill about the seam,
-then it moves the code in small steps with the tests green after each.
+It checks first that the tests pass, then grills you about the seam. Before
+anything moves, it confirms the tests actually cover the code that's moving — a
+green suite over untested code proves nothing. Then it moves the code in small
+steps with the tests green after each.
 **Narrow refactors only**: if the grill finds the change fans out across the
 codebase, the run stops and says so.
 
@@ -249,8 +250,9 @@ flowchart TD
 ```mermaid
 flowchart TD
     wt["Worktree from main<br/>EnterWorktree, branch renamed refactor/slug"]:::temper
-    base["Baseline and pin<br/>gates green and the area covered<br/>stops if either fails"]:::temper
+    base["Baseline<br/>gates green, output recorded<br/>stops if red"]:::temper
     grill["Grill the seam<br/>grilling, codebase-design<br/>stops if it's too wide"]:::matt
+    pin["The pin<br/>a test covers everything that moves<br/>stops if something isn't"]:::temper
     go(["Start line: nothing is asked after this"]):::temper
     move["Move it in steps<br/>inline, tests green after each"]:::temper
     gates["Gates plus every baseline test<br/>the repo's own commands"]:::temper
@@ -269,7 +271,7 @@ flowchart TD
     pr["Clear .scratch, open the PR<br/>baseline in the description"]:::temper
     merge(["You review and merge"]):::you
 
-    wt --> base --> grill --> go --> move --> gates --> panel --> verify --> pr --> merge
+    wt --> base --> grill --> pin --> go --> move --> gates --> panel --> verify --> pr --> merge
 
     classDef matt fill:#EEEDFE,stroke:#534AB7,color:#26215C
     classDef sp fill:#FAECE7,stroke:#993C1D,color:#4A1B0C
