@@ -1,32 +1,80 @@
 ---
-description: "Fix a bug test-first, from symptom to pull request."
+description: "Fix a bug: a short grill, then Superpowers finds the root cause and fixes it test-first, then temper checks it and opens a pull request."
 argument-hint: "<the symptom>"
 ---
 
+# temper bug
+
 Behaviour that exists and is wrong: $ARGUMENTS
 
-Load each skill named below and follow it. Do not restate its method here.
+Each step names the skill that does the work. Load it and follow it; what's
+written here is only what temper adds. With no symptom given, ask for one first.
 
-## 1. Grill, briefly
+## 1. Start
 
-Load `mattpocock-skills:grilling`. A bug needs four answers and no more: the
-symptom, what should happen instead, how to reach it, and what is out of scope.
+Load `temper:start` with the kind `fix`.
 
-A cause the user suspects is their hypothesis, not a finding. Record it as such.
+Done when the session is in `.claude/worktrees/<slug>` on the branch `fix/<slug>`.
 
-## 2. Diagnose, only if you need to
+## 2. The grill
 
-If the cause isn't obvious from the grill, load `mattpocock-skills:diagnosing-bugs`.
-If it is obvious, skip this.
+Load `mattpocock-skills:grilling`. A bug needs four answers:
 
-## 3. Fix it test-first
+- the **symptom** — what happens
+- the **expected** behaviour — what should happen instead
+- how to **reach** it
+- what's **out** of scope
 
-Load `mattpocock-skills:tdd`. The failing test is the reproduction: write it
-first, watch it fail for the right reason, then make it pass.
+A cause the user suspects is a hypothesis for step 4 to test. Record it as one.
 
-If the fix needs a contract change or a new module, stop. That is a feature
-wearing a bug's clothes, and it needs `/temper:feature`.
+The grill can end the run. When the behaviour is working as designed, say so and
+stop. When putting it right means new behaviour rather than a correction, stop and
+recommend `/temper:feature`. Either way, tell the user the worktree is still empty
+and that you'll remove it if they ask.
 
-## 4. Finish
+Write the four answers, and any hypothesis, to `.scratch/<slug>/spec.md`, and
+commit it following the Commits field of the repo's `## temper` section.
 
-Load the `temper:finish` skill and follow it.
+Done when the user has confirmed the four answers and `spec.md` is committed.
+
+## 3. The start line
+
+Tell the user: *Start line — nothing is asked from here until the pull request.*
+
+From here on, a question you'd have asked is a decision you make: take the choice
+the spec supports best, note it for the pull request, and carry on.
+
+## 4. Root cause, then the fix
+
+Load `superpowers:systematic-debugging`, with `.scratch/<slug>/spec.md` as the
+bug report it works from. It ends in one of three places:
+
+- **Fixed** — a failing test first, then the fix, verified. Commit anything left
+  uncommitted, following the Commits field. Keep the root cause, in two or three
+  lines, for the pull request.
+- **Three fixes failed** — at the point where the skill says to discuss the
+  architecture with your human partner, this run stops instead. Report the root
+  cause as far as it got, each attempt and why it failed, and what's committed.
+- **The fix needs design** — a changed contract, a new module, a different data
+  shape. Stop, and report that the work needs `/temper:feature`.
+
+Done when the fix is committed, or the run has stopped with its report.
+
+## 5. Check
+
+Load `temper:check` with:
+
+- mode `build`
+- the default fixed point
+- intent `.scratch/<slug>/spec.md`
+- quality seat yes
+- no baseline
+
+Done when `check` has written its verdict.
+
+## 6. Finish
+
+Load `temper:finish` with the kind `fix`, the verdict, the root cause, and every
+decision you noted after the start line.
+
+Done when `finish` has reported a pull request, or why there isn't one.

@@ -1,51 +1,106 @@
 ---
-description: "Prepare this repo for the temper commands. Run once."
+description: "Check a repo is ready for temper and write its ## temper section. Run once per repo."
 ---
 
-Three passes, in order. Don't start one until the last is done.
+# temper setup
 
-## 1. Are the skills temper depends on installed?
+Run from the repo's main checkout. Three passes, in order. Each one ends in a
+pass, or a stop that names what to fix.
 
-temper sequences other people's skills; it does not carry copies of them. Check
-your available skills for all five:
+## 1. Plugins and tools
 
-- `mattpocock-skills:grilling`
-- `mattpocock-skills:tdd`
-- `mattpocock-skills:code-review`
-- `mattpocock-skills:diagnosing-bugs`
-- `mattpocock-skills:codebase-design`
+Check your available skills for every one of these:
 
-If any is missing, stop and tell the user to run these, then start again:
+| Plugin | Skills temper loads |
+|---|---|
+| `mattpocock-skills` | `grilling`, `research`, `code-review`, `codebase-design` |
+| `superpowers` | `writing-plans`, `subagent-driven-development`, `systematic-debugging`, `requesting-code-review`, `test-driven-development`, `verification-before-completion` |
+
+`/to-spec` is absent from that list by design — only a person can run it — and it
+ships in the same plugin as `grilling`, so finding `grilling` covers it.
+
+If any skill is missing, stop. Name each missing one and give the install lines:
 
 ```
 /plugin marketplace add mattpocock/skills
 /plugin install mattpocock-skills@mattpocock
+/plugin install superpowers@claude-plugins-official
 ```
 
-Say which ones were missing. A Claude Code plugin cannot declare a dependency on
-another, so nothing installs these for you — and a temper command that loads a
-skill which isn't there will improvise the method rather than fail, which is
-worse than stopping here.
+Then tell the user to start a new session before running setup again. A plugin
+can't declare its dependencies, and a temper command whose skill is missing
+improvises the method in its place — stopping here is what prevents that.
 
-## 2. Matt's per-repo setup
+Three more checks:
 
-`to-spec`, `to-tickets` and `code-review` all read `docs/agents/issue-tracker.md`.
-If that file exists, say so and go to pass 3.
+- **`gh auth status`** fails → stop. temper opens pull requests with `gh`.
+- **`security-review`** is missing from your skills → warn, and continue. Security
+  passes will be recorded as not run.
+- **Any `pstack:` skill** is present → warn, and continue. pstack's session hook
+  names `poteto-mode` as the entry point for all engineering work, and it competes
+  with a temper run; recommend disabling pstack in repos that use temper.
 
-If it doesn't, tell the user to run `/setup-matt-pocock-skills` and stop. It is
-theirs to run; you cannot run it for them.
+Done when every skill in the table is present and `gh` is signed in.
 
-## 3. What temper itself needs
+## 2. The issue tracker
 
-Explore the repo, then propose a `## temper` section for its `CLAUDE.md` or
-`AGENTS.md` — whichever it already uses. Lead with what you found so the user can
-accept it in a word.
+temper keeps each run's spec and plan in `.scratch/<slug>/`, committed on the
+branch and deleted before the pull request. That needs Matt's local markdown
+tracker, and a `.scratch/` git can see.
 
-- **Gates** — the commands that must pass before work is proposed, in the order
-  they should run. Read the package scripts and CI workflows rather than guessing.
-- **Risky paths** — globs where a change deserves a closer look: auth, money,
-  migrations, crypto, anything append-only.
-- **Verify** — the command or skill that proves the app actually runs, or `none`.
-- **Commits** — the repo's commit message rules, or `none`.
+- **`docs/agents/issue-tracker.md`** missing → stop. The user runs
+  `/setup-matt-pocock-skills` and chooses **Local markdown**.
+- **The tracker it describes** keeps issues somewhere other than
+  `.scratch/<feature-slug>/` → stop. Explain why temper needs local markdown, and
+  that switching means running `/setup-matt-pocock-skills` again.
+- **`git check-ignore -v .scratch/probe`** prints a rule → stop. Show the rule and
+  the file it's in; `.scratch/` has to be committable.
 
-Write it only once the user has confirmed it.
+Done when all three pass.
+
+## 3. The `## temper` section
+
+Use the root `CLAUDE.md` if it exists, otherwise `AGENTS.md`. If neither exists,
+propose creating `CLAUDE.md`.
+
+Work out each field from the repo itself:
+
+- **Gates** — the commands the repo's CI runs to accept a change, in the order it
+  runs them. Read the CI workflow files and the package scripts, `Makefile` or
+  build config they call.
+- **Risky paths** — globs for code where a mistake is a security or integrity
+  problem: authentication, money, migrations, cryptography, anything append-only.
+  For each, name the project skill under `.claude/skills/` or the doc that explains
+  what it protects, or `none`.
+- **Verify** — the command or project skill that proves the running application
+  works end to end, beyond its tests.
+- **Commits** — the repo's documented commit message rules, or the convention
+  `git log` shows consistently.
+
+Propose the whole section in exactly this shape, and for each value say where it
+came from, so the user can accept it in a word:
+
+```markdown
+## temper
+
+- Worktrees: all work happens in a worktree created from <default branch>.
+- Superpowers: in temper runs, grilling and /to-spec replace brainstorming, and temper's finish replaces finishing-a-development-branch.
+- Gates: <command>; <command>
+- Risky paths: <glob> (<skill or doc>); <glob> (none)
+- Verify: <command or skill>
+- Commits: <rules>
+```
+
+Every field carries a value: a field with nothing to put in it says `none`. The
+Worktrees and Superpowers lines are fixed wording; they make temper's rules
+project instructions, which Claude Code and Superpowers both rank above their own
+defaults.
+
+If the section already exists, show the differences field by field and change only
+what the user confirms.
+
+Write the section once the user confirms it. Leave it uncommitted, and tell the
+user to commit it through their usual process: temper commands start only from a
+clean tree.
+
+Done when the section is written and every field has a value.

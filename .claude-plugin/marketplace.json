@@ -8,7 +8,7 @@
     {
       "name": "temper",
       "source": "./",
-      "description": "Grill, spec and ticket the work with the human, then build it test-first, review it and open a pull request.",
+      "description": "Grill and spec the work with the human, plan and build it with Superpowers, then review it and open a pull request.",
       "category": "engineering"
     }
   ]
