@@ -191,6 +191,46 @@ report says what stopped it and where it got to.
 temper never merges. The worktree stays for PR feedback; remove it yourself once
 the work lands.
 
+## Uninstall
+
+### Remove the plugin
+
+```
+claude plugin uninstall temper@temper --prune
+```
+
+`--prune` also removes Matt's skills and Superpowers, but only the copies temper
+installed for you — a copy you installed yourself stays. Leave `--prune` off to keep
+both. Add `-y` when running it from a script.
+
+Uninstalling always happens user-wide: `--scope project` is refused, because
+enabling temper for a repo doesn't install it there.
+
+Then remove the marketplace, and start a new session:
+
+```
+claude plugin marketplace remove temper
+```
+
+### Clean up each repo that used it
+
+Uninstalling leaves every repo's own files as they were. In each one:
+
+- **`.claude/settings.json`** — delete `temper@temper`,
+  `mattpocock-skills@claude-plugins-official` and
+  `superpowers@claude-plugins-official` from `enabledPlugins`, then commit. They
+  stay listed after an uninstall.
+- **`CLAUDE.md` or `AGENTS.md`** — delete the `## temper` section.
+- **Runs that didn't finish** — `git worktree list` shows any left under
+  `.claude/worktrees/`, each on a `feat/`, `fix/` or `refactor/` branch holding its
+  `.scratch/` folder. Once you've saved anything you want from one, remove it with
+  `git worktree remove .claude/worktrees/<slug>`, then delete its branch.
+- **`.superpowers/`** — a build that stopped partway through can leave its
+  workspace here. It's gitignored, so delete the folder.
+
+Matt's `docs/agents/issue-tracker.md` belongs to his skills, not temper; keep it if
+you still use them.
+
 ## Workflows
 
 Purple is Matt's skills or Claude Code's own, orange is Superpowers, green is
