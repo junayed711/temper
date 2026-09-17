@@ -10,9 +10,10 @@ Turns a clean check into a pull request.
 ## What the caller gives you
 
 - The **kind** — `feat`, `fix` or `refactor` — and the check's **verdict**.
-- For a feature: the list of **rulings** Superpowers' build loop made on the user's
-  behalf, from its final message. The loop deletes its own ledger when it finishes,
-  so that message is the only copy.
+- The **rulings**: every decision made on the user's behalf after the start line.
+  For a feature, that includes the list from Superpowers' build loop's final
+  message — the loop deletes its own ledger when it finishes, so that message is
+  the only copy.
 - For a bug: the **root cause** found. For a refactor: the **baseline** result.
 
 The slug and the default branch are as the `start` skill defines them.
@@ -33,8 +34,8 @@ Everything that has to outlive the run, taken now — the next step deletes
 1. **Not checked**, first — a security pass that didn't run on a risky path leads.
 2. **What was asked**, in a few lines from `.scratch/<slug>/spec.md`.
 3. **What changed**: each commit's subject, in order.
-4. By kind: the **root cause**, or the **baseline** proof, or every **ruling** —
-   what was decided, why, and what it costs if it was wrong.
+4. Every **ruling** — what was decided, why, and what it costs if it was wrong —
+   plus, by kind, the **root cause** or the **baseline** proof.
 5. **How it was checked**: gates, each seat's outcome, verify.
 6. **Not blocking**: each finding with its seat and rating.
 
