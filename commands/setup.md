@@ -22,20 +22,25 @@ ships in the same plugin as `grilling`, so finding `grilling` covers it.
 If any skill is missing, stop. Name each missing one and give the install lines:
 
 ```
-/plugin marketplace add mattpocock/skills
-/plugin install mattpocock-skills@mattpocock
+/plugin install mattpocock-skills@claude-plugins-official
 /plugin install superpowers@claude-plugins-official
 ```
 
-Then tell the user to start a new session before running setup again. A plugin
-can't declare its dependencies, and a temper command whose skill is missing
-improvises the method in its place — stopping here is what prevents that.
+Then tell the user to start a new session before running setup again. temper
+declares both plugins as dependencies, so a missing skill means a dependency didn't
+install or was turned off — temper came from a marketplace that doesn't allow
+dependencies from other marketplaces, or someone disabled one. A temper command
+whose skill is missing improvises the method in its place; stopping here is what
+prevents that.
 
-Three more checks:
+Four more checks:
 
 - **`gh auth status`** fails → stop. temper opens pull requests with `gh`.
 - **`security-review`** is missing from your skills → warn, and continue. Security
   passes will be recorded as not run.
+- **`claude plugin list`** shows `mattpocock-skills` installed from two
+  marketplaces → warn, and continue. Recommend uninstalling the copy from
+  `mattpocock`, so the same skills aren't loaded twice.
 - **Any `pstack:` skill** is present → warn, and continue. pstack's session hook
   names `poteto-mode` as the entry point for all engineering work, and it competes
   with a temper run; recommend disabling pstack in repos that use temper.

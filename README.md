@@ -28,15 +28,14 @@ rewrites code instead of reviewing it.
 
 - **Claude Code**, with the [GitHub CLI](https://cli.github.com) signed in, in a
   repo with a GitHub remote.
-- **`mattpocock-skills`**.
-- **`superpowers`**. Enable it in the repos that use temper rather than
-  everywhere — it injects its own instructions at the start of every session,
-  in every repo.
+- **`mattpocock-skills`** and **`superpowers`**, which installing temper brings in.
+  temper declares both as dependencies from Anthropic's official marketplace, and
+  enabling temper for a repo enables them there too.
 
-A Claude Code plugin can't declare a dependency on another plugin, so nothing
-installs these for you. `/temper:setup` checks for them and stops if any are
-missing, because a command that loads a skill which isn't there improvises the
-method instead of failing.
+If either is missing anyway — turned off by hand, or temper came from a marketplace
+that doesn't allow dependencies from other marketplaces — `/temper:setup` stops and
+says what to install, because a command that loads a skill which isn't there
+improvises the method instead of failing.
 
 **pstack is deliberately not used.** Its session-start hook tells every session,
 in every repo, to treat `poteto-mode` as the entry point for all engineering
@@ -46,16 +45,43 @@ goes, the louder it gets.
 ## Install
 
 ```
-/plugin marketplace add mattpocock/skills
-/plugin install mattpocock-skills@mattpocock
-/plugin install superpowers@claude-plugins-official
 /plugin marketplace add junayed711/temper
 /plugin install temper@temper
 ```
 
+That installs `mattpocock-skills` and `superpowers` from `claude-plugins-official`
+along with it. Claude Code registers that marketplace the first time it starts
+interactively; if it isn't there, add it first with
+`/plugin marketplace add anthropics/claude-plugins-official`.
+
+If you already have Matt's skills from his own marketplace, uninstall that copy
+first with `/plugin uninstall mattpocock-skills@mattpocock`, so there aren't two
+copies of the same skills.
+
 The same commands work from a terminal as `claude plugin …`. To install from a
 local clone instead, pass its path to `marketplace add`. Start a new session
 afterwards; a running session doesn't pick up new skills.
+
+### Keep it to the repos that use it
+
+Superpowers adds its own instructions to every session, in every repo where it's
+enabled. To keep it — and temper — to the repos you choose, turn both off
+everywhere, then on per repo. The order matters: a plugin can't be turned off while
+a plugin that depends on it is still on.
+
+```
+claude plugin disable temper@temper --scope user
+claude plugin disable superpowers@claude-plugins-official --scope user
+```
+
+Then, in each repo that uses temper:
+
+```
+claude plugin enable temper@temper --scope project
+```
+
+That turns on its dependencies for the repo as well, and writes them to the repo's
+`.claude/settings.json` — commit it.
 
 ## Set up a repo
 
@@ -404,9 +430,9 @@ Superpowers reinjects its own rules at the start of every session and after
 every compaction, and its build loop ends by handing off to its own finish —
 which asks you whether to merge, open a PR or keep the branch. temper guards
 that hand-off three ways: the override lives in `CLAUDE.md`, which is always
-loaded; temper pins the same rule into the plan file, which the build loop
-rereads after compaction; and Superpowers is enabled only in repos that use
-temper.
+loaded; temper pins the same rule into the plan file, which the build loop's
+ledger points a recovering session back to; and Superpowers is enabled only in
+repos that use temper.
 
 ## Not yet proven
 
@@ -416,7 +442,9 @@ not run. These can only be settled by a real run:
 1. Superpowers respects the `CLAUDE.md` override at the end of its build loop.
 2. The rule pinned in `plan.md` still holds after a long session compacts.
 3. `security-review` reviews a committed range rather than only uncommitted work.
-4. Enabling Superpowers per project behaves as expected.
+4. Enabling temper per repo keeps Superpowers' session instructions out of other
+   repos. Per-repo enabling of a plugin and its dependencies was tested with
+   stand-in plugins; Superpowers' own hook wasn't.
 5. `EnterWorktree` works when called from inside a plugin command.
 
 ## Not supported

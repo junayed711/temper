@@ -4,6 +4,9 @@
     "name": "Junayed"
   },
   "description": "The temper agent pipeline, as a local Claude Code plugin marketplace.",
+  "allowCrossMarketplaceDependenciesOn": [
+    "claude-plugins-official"
+  ],
   "plugins": [
     {
       "name": "temper",
