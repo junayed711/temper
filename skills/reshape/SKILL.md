@@ -54,6 +54,11 @@ ticket that deletes the old shape first confirms nothing still calls it; if
 something does, the ticket isn't ready, and the run ends saying which callers are
 left.
 
+Where a step turns on what a library actually does now — what a call takes, what
+it renamed, what it removed — settle it with `temper:docs` before the step. A
+move made against a misremembered API changes behaviour, which is the one thing
+a reshape may not do.
+
 After each step, run the Gates and commit following the Commits field. A step that
 stays red after a second attempt ends the run: revert it, and report which steps
 are committed and what failed.

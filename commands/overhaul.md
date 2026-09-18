@@ -59,6 +59,9 @@ Behaviour stays exactly as it is; that's the requirement every ticket is judged
 against. Where the grill finds code that moves with no test covering it, name it:
 those tickets will stop at their pin until it's covered.
 
+Where a question turns on what a library actually does, settle it with
+`temper:docs` before the next round, not from memory.
+
 The grill can end the run:
 
 - **Narrow enough for one run** — one seam, with callers you can count. Stop, and
@@ -126,9 +129,11 @@ then:
 
 The description follows the user's or the repo's pull request rules where there
 are any. Otherwise: one plain sentence on what the refactor achieves, the tickets
-in order with what blocks each, and a Heads up that the plan stays on the default
-branch until the last ticket's pull request deletes it. No gates run: the change is
-the plan alone.
+in order with what blocks each, every ruling in `.scratch/<effort>/rulings.md`,
+and a Heads up that the plan stays on the default branch until the last ticket's
+pull request deletes it. This is the only pull request parts A and B open, so a
+ruling that isn't in it is a ruling nobody sees. No gates run: the change is the
+plan alone.
 
 Done when you've reported the pull request's URL.
 
@@ -184,6 +189,10 @@ Done when `.scratch/<slug>/baseline.md` holds every gate, green.
 Write `.scratch/<slug>/spec.md`: the ticket's path, its title, its body, and the
 requirement that behaviour stays exactly as it is.
 
+This part of the run is its own invocation, in a fresh worktree with no grill
+behind it. So from here on, settle any documentation question with `temper:docs`,
+as `temper:reshape` does at C5.
+
 If reading the code shows the ticket can't land with the gates green on its own,
 stop. Say which ticket it depends on that the plan doesn't list, and that the plan
 needs revising on a branch of its own. The worktree holds only the baseline and
@@ -223,7 +232,8 @@ Done when `check` has written its verdict.
 ### C8. Finish
 
 Load `temper:finish` with the kind `refactor`, the verdict, the baseline result,
-and every decision you noted after the start line — the first of them being which
-ticket this was, and whether its pull request deletes the plan.
+and every ruling: each decision you made after the start line — the first being
+which ticket this was, and whether its pull request deletes the plan — and
+whatever `.scratch/<slug>/rulings.md` holds.
 
 Done when `finish` has reported a pull request, or why there isn't one.

@@ -10,10 +10,13 @@ Turns a clean check into a pull request.
 ## What the caller gives you
 
 - The **kind** — `feat`, `fix` or `refactor` — and the check's **verdict**.
-- The **rulings**: every decision made on the user's behalf after the start line.
-  For a feature, that includes the list from Superpowers' build loop's final
-  message — the loop deletes its own ledger when it finishes, so that message is
-  the only copy.
+- The **rulings**: every decision made on the user's behalf after the start line,
+  and every ruling `temper:docs` asks for — a fact Context7 couldn't answer, and
+  where it came from instead. For a feature, that includes the list from
+  Superpowers' build loop's final message — the loop deletes its own ledger when
+  it finishes, so that message is the only copy. Read `.scratch/<slug>/rulings.md`
+  too, whether or not the caller quoted it: it holds the rulings from earlier
+  sessions and from subagents this conversation never saw.
 - For a bug: the **root cause** found. For a refactor: the **baseline** result.
 
 The slug and the default branch are as the `start` skill defines them.
@@ -29,9 +32,11 @@ Done when that's reported.
 ## 1. Write the description
 
 Everything that has to outlive the run, taken now, because the next step deletes
-`.scratch/`. If the user's or the repo's instructions say how to write a pull
-request, follow them. Otherwise, write it for someone who doesn't work on the code:
-the summary first, then the record.
+`.scratch/`. Read `.scratch/<slug>/rulings.md` here, before that deletion, and
+fold what it holds in with the rulings the caller gave you. If the user's or the
+repo's instructions say how to write a pull request, follow them. Otherwise,
+write it for someone who doesn't work on the code: the summary first, then the
+record.
 
 ```markdown
 One sentence in plain words: what changes, and why it matters.
@@ -49,7 +54,8 @@ One sentence in plain words: what changes, and why it matters.
 
 **What was asked**: a few lines from `.scratch/<slug>/spec.md`.
 
-**Rulings**: every decision made, why, and what it costs if it was wrong.
+**Rulings**: every decision made, and every fact Context7 couldn't answer with
+where it came from instead — why, and what it costs if it was wrong.
 
 **Root cause** for a bug, or **baseline** proof for a refactor.
 

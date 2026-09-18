@@ -18,7 +18,7 @@ is good enough to propose.
 | Shaping the work | [Matt Pocock's skills](https://github.com/mattpocock/skills) | `grilling`, `research`, `to-spec`, `to-tickets`, `code-review`, `codebase-design` |
 | Building it | [Superpowers](https://github.com/obra/superpowers) | `writing-plans`, `subagent-driven-development`, `systematic-debugging`, `requesting-code-review` |
 | Isolation and security | Claude Code itself | `EnterWorktree`, `security-review` |
-| Gates, refactor steps, review panel, proposing | temper | `start`, `baseline`, `reshape`, `check`, `finish`, and one agent: `comments-reviewer` |
+| Gates, documentation, refactor steps, review panel, proposing | temper | `start`, `docs`, `baseline`, `reshape`, `check`, `finish`, and one agent: `comments-reviewer` |
 
 The rule behind every choice: if a skill already does the job, use it. temper
 has exactly one agent of its own, because the only existing comments pass
@@ -36,6 +36,15 @@ If either is missing anyway — turned off by hand, or temper came from a market
 that doesn't allow dependencies from other marketplaces — `/temper:setup` stops and
 says what to install, because a command that loads a skill which isn't there
 improvises the method instead of failing.
+
+**Context7 is preferred for documentation, and temper doesn't ship it.** It is
+where a run gets facts that are true today: any question about a library,
+framework, SDK, CLI or hosted API is looked up there, pinned to the version the
+repo uses, never answered from memory or the web. Install it however you like —
+the `context7` plugin, or `npx ctx7 setup --claude` for the CLI and its
+`find-docs` skill — and temper uses whichever path it finds. When none is there,
+or it can't answer, the run reads that thing's source in the repo instead, records
+a ruling naming where the fact came from, and carries on.
 
 **pstack is deliberately not used.** Its session-start hook tells every session,
 in every repo, to treat `poteto-mode` as the entry point for all engineering
@@ -308,10 +317,10 @@ you, grey is temper. Where a step can end the run or send work back, its box say
 ```mermaid
 flowchart TD
     wt["Worktree from main<br/>EnterWorktree, branch renamed feat/slug"]:::temper
-    grill["The grill<br/>grilling, research if it stalls<br/>can end the run here"]:::matt
+    grill["The grill<br/>grilling, documentation facts from Context7,<br/>everything else from research<br/>can end the run here"]:::matt
     spec["You type /to-spec<br/>writes .scratch/slug/spec.md"]:::you
     plan["Write the plan<br/>writing-plans"]:::sp
-    pin["Pin temper's rule into plan.md<br/>don't use Superpowers' own finish"]:::temper
+    pin["Pin temper's rules into plan.md<br/>don't use Superpowers' own finish;<br/>documentation from Context7"]:::temper
     go(["Start line: you okay the task list"]):::temper
 
     subgraph build["subagent-driven-development"]
@@ -584,6 +593,12 @@ It never merges.
   workflow used on it. temper's settings live in `.claude/temper.md`, and each
   command carries its own rules. The cost: those rules aren't always loaded the
   way `CLAUDE.md` is.
+- **temper carries its own documentation rule.** Context7's own setup writes a
+  user-level rule, which reaches a session but not a subagent that session
+  dispatches — and a temper build is subagents. So `temper:docs` states the rule,
+  and temper pins it into the plan and the ticket the subagents actually read. It
+  adds what the vendor's rule doesn't say: pin the lookup to the repo's version,
+  and record where a fact came from when Context7 couldn't answer it.
 - **No pstack.** See Requirements.
 
 ### Living alongside Superpowers
@@ -611,6 +626,8 @@ not run. These can only be settled by a real run:
 5. `EnterWorktree` works when called from inside a plugin command.
 6. `/to-tickets` writes to `.scratch/<effort>/issues/` when told so in the
    conversation, without `/setup-matt-pocock-skills` having configured a tracker.
+7. The documentation rule pinned in `plan.md` still reaches implementer subagents
+   after a long session compacts.
 
 ## Not supported
 
@@ -636,6 +653,7 @@ temper/
 │   └── review.md
 ├── skills/
 │   ├── start/               worktree from main, branch named for the work
+│   ├── docs/                the documentation rule: Context7, pinned by version
 │   ├── baseline/            a refactor's before: the gates, caching off
 │   ├── reshape/             the pin, then the move in green steps
 │   ├── check/               gates, review panel, fixes, verify, the decision
