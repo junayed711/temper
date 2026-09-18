@@ -37,6 +37,9 @@ reference for its vocabulary — module, interface, seam, depth. Settle:
 Behaviour stays exactly as it is; that's the requirement the whole run is judged
 against.
 
+Where a question turns on what a library actually does, settle it with
+`temper:docs` before the next round, not from memory.
+
 The grill can end the run:
 
 - **Too wide** — a change fanning out across the codebase, where no single run can
@@ -75,6 +78,7 @@ Done when `check` has written its verdict.
 ## 6. Finish
 
 Load `temper:finish` with the kind `refactor`, the verdict, the baseline result,
-and every decision you noted after the start line.
+and every ruling: each decision you made after the start line, and whatever
+`.scratch/<slug>/rulings.md` holds.
 
 Done when `finish` has reported a pull request, or why there isn't one.

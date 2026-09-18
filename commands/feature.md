@@ -30,9 +30,10 @@ Load `mattpocock-skills:grilling` and grill until the user confirms you share an
 understanding. The grill takes the place of `superpowers:brainstorming` in a temper
 run; don't load it.
 
-When a question turns on a fact nobody in the conversation has — what a library
-actually does, what an API really returns — load `mattpocock-skills:research` to
-settle it, and save its notes under `.scratch/<slug>/research/`.
+When a question turns on a fact nobody in the conversation has, settle it before
+you ask the next round: a documentation question with `temper:docs`, anything
+else with `mattpocock-skills:research`. Save either one's notes under
+`.scratch/<slug>/research/`.
 
 Settle what existing behaviour this replaces. Where it replaces some, the old
 behaviour's tests go when the new ones arrive.
@@ -68,12 +69,12 @@ Find the spec at `.scratch/<slug>/spec.md`. If `/to-spec` wrote it into another
 folder under `.scratch/`, move it there. If there's no spec, tell the user to run
 `/to-spec` and stop.
 
-If the tree has uncommitted changes that aren't the spec or research notes, a
-previous build stopped partway through. Ask whether to keep them — committed,
-following the Commits field — or discard them.
+If the tree has uncommitted changes that aren't the spec, the research notes or
+`.scratch/<slug>/rulings.md`, a previous build stopped partway through. Ask
+whether to keep them — committed, following the Commits field — or discard them.
 
-Commit the spec and research notes following the Commits field of the repo's
-`.claude/temper.md`.
+Commit the spec, the research notes and `.scratch/<slug>/rulings.md` if part A's
+grill left one, following the Commits field of the repo's `.claude/temper.md`.
 
 If `.scratch/<slug>/plan.md` already exists, this is a resumed build: go to B4.
 
@@ -87,10 +88,10 @@ execute, the choice is **Subagent-Driven**, starting after step B4.
 
 Done when `plan.md` is saved with its tasks.
 
-### B3. Pin temper's rule into the plan
+### B3. Pin temper's rules into the plan
 
-Add this section directly after the plan's header, then commit the plan following
-the Commits field:
+Add these two sections directly after the plan's header, then commit the plan
+following the Commits field:
 
 ```markdown
 ## Handing back to temper
@@ -99,13 +100,20 @@ This plan runs inside a temper run. When every task is complete and the final
 whole-branch review is clean, end with your list of rulings and hand control back
 to `/temper:feature`, which checks the branch and opens the pull request. temper's
 finish takes the place of `superpowers:finishing-a-development-branch` here.
+
+## Documentation in this run
+
+Load `temper:docs` before you settle any documentation question, and tell every
+subagent a task dispatches to do the same. Append each ruling it asks for to
+`.scratch/<slug>/rulings.md`, which temper reads when it writes the pull request.
 ```
 
-When a long session compacts, instructions in the conversation get summarised,
-but the build loop's ledger names this plan file as the one it's running. Putting
-the rule in the plan keeps it where a recovering session is pointed.
+Use the real slug in that path. When a long session compacts, instructions in the
+conversation get summarised, but the build loop's ledger names this plan file as
+the one it's running, and each implementer subagent reads the plan rather than
+this conversation. Putting the rules there keeps them where both are pointed.
 
-Done when the section is in `plan.md` and the plan is committed.
+Done when both sections are in `plan.md` and the plan is committed.
 
 ### B4. The start line
 
@@ -150,7 +158,8 @@ Done when `check` has written its verdict.
 
 ### B7. Finish
 
-Load `temper:finish` with the kind `feat`, the verdict, and every ruling: the build
-loop's list and each decision you noted after the start line.
+Load `temper:finish` with the kind `feat`, the verdict, and every ruling: the
+build loop's list, each decision you noted after the start line, and whatever
+`.scratch/<slug>/rulings.md` holds, which this conversation mostly doesn't.
 
 Done when `finish` has reported a pull request, or why there isn't one.
