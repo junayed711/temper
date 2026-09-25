@@ -1,0 +1,12 @@
+name: GateBolt
+on: [push]
+jobs:
+  provenance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: npx @gatebolt/cli ci
+        env:
+          GATEBOLT_KEY: ${{ secrets.GATEBOLT_KEY }}
