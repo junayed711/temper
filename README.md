@@ -155,7 +155,8 @@ those change; it shows what it would change rather than overwriting.
 ## How to use it
 
 **Start every command from the repo's main checkout, on `main`, with a clean
-tree** — except `/temper:review`, which runs inside the worktree it's reviewing.
+tree** — except `/temper:review`, which runs inside the worktree it's reviewing,
+and `/temper:cleanup`, which runs from the main checkout on any branch.
 temper creates the worktree and the branch itself.
 
 ### Build something new
@@ -236,6 +237,25 @@ the branch's spec if temper built it, otherwise it asks you one line about what
 the change should do. It reports a verdict and changes nothing — no fixes, no
 commits, no PR.
 
+### Clean up after runs
+
+From the main checkout:
+
+```
+/temper:cleanup
+```
+
+It shows every worktree in the project. Each local `feat/`, `fix/`, `refactor/`
+or `worktree-` branch gets a number and its details: whether its PR is open,
+merged or closed, whether it's already in `main`, whether anything exists only
+locally, and whether its worktree has uncommitted changes. Other worktrees are
+shown without a number, and `main` is never touched. You name the numbers to
+delete, or none. It refuses any you name that still hold work, and says why.
+
+It works locally only: remote branches are never deleted or changed, and the
+fetch never prunes. Deleting a worktree also deletes the gitignored files in it,
+such as `.env` copies.
+
 ### The start line
 
 Each command asks everything up front and then stops asking. After that point a
@@ -256,8 +276,8 @@ report says what stopped it and where it got to.
 
 ### After the pull request
 
-temper never merges. The worktree stays for PR feedback; remove it yourself once
-the work lands.
+temper never merges. The worktree stays for PR feedback; once the work lands,
+`/temper:cleanup` removes it and its branch.
 
 ## Uninstall
 
@@ -291,10 +311,9 @@ Uninstalling leaves every repo's own files as they were. In each one:
 - **`.claude/temper.md`** — delete it, then commit.
 - **An overhaul that didn't finish** — its plan is still committed in
   `.scratch/<effort>/`. Delete the folder, then commit.
-- **Runs that didn't finish** — `git worktree list` shows any left under
-  `.claude/worktrees/`, each on a `feat/`, `fix/` or `refactor/` branch holding its
-  `.scratch/` folder. Once you've saved anything you want from one, remove it with
-  `git worktree remove .claude/worktrees/<slug>`, then delete its branch.
+- **Worktrees and branches runs left behind** — run `/temper:cleanup` before
+  uninstalling. It shows each one's PR and merge state, deletes the ones you name,
+  and refuses any that still hold work, so you can save what you want first.
 - **`.superpowers/`** — a build that stopped partway through can leave its
   workspace here. It's gitignored, so delete the folder.
 
@@ -480,24 +499,42 @@ flowchart TD
     classDef temper fill:#F1EFE8,stroke:#5F5E5A,color:#2C2C2A
 ```
 
+### `/temper:cleanup`
+
+```mermaid
+flowchart TD
+    here["Main checkout<br/>stops if inside a worktree"]:::temper
+    fetch["git fetch --no-prune origin<br/>PR checks if gh works"]:::temper
+    find["List every worktree<br/>number temper's: feat/ fix/ refactor/ worktree-"]:::temper
+    sort["Details for each<br/>PR, in main, pushed, uncommitted changes"]:::temper
+    ask(["You name the numbers to delete<br/>or none"]):::you
+    remove["Delete the named ones, local only<br/>refuses any that hold work"]:::temper
+    report["Report what went and what was refused"]:::temper
+
+    here --> fetch --> find --> sort --> ask --> remove --> report
+
+    classDef you fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+    classDef temper fill:#F1EFE8,stroke:#5F5E5A,color:#2C2C2A
+```
+
 ### Side by side
 
-| | `/feature` | `/bug` | `/refactor` | `/overhaul` | `/review` |
-|---|---|---|---|---|---|
-| Branch | `feat/<slug>` | `fix/<slug>` | `refactor/<slug>` | `refactor/<effort>`, then `refactor/<effort>-<NN>` | the one you're in |
-| You type a command | `/to-spec` | — | — | `/to-tickets` | — |
-| Last question | okay the task list | end of the grill | end of the grill | run this ticket? | the intent |
-| Built by | Superpowers' build loop | `systematic-debugging` | temper, inline | temper, inline, a ticket at a time | nothing |
-| Review seats | 4 | 5 | 5 | 5 per ticket | 5 |
-| Fixes return to the gates | yes | yes | yes | yes | no |
-| Ends in | a pull request | a pull request | a pull request | a plan PR, then one PR per ticket | a verdict |
+| | `/feature` | `/bug` | `/refactor` | `/overhaul` | `/review` | `/cleanup` |
+|---|---|---|---|---|---|---|
+| Branch | `feat/<slug>` | `fix/<slug>` | `refactor/<slug>` | `refactor/<effort>`, then `refactor/<effort>-<NN>` | the one you're in | none of its own |
+| You type a command | `/to-spec` | — | — | `/to-tickets` | — | — |
+| Last question | okay the task list | end of the grill | end of the grill | run this ticket? | the intent | what to remove |
+| Built by | Superpowers' build loop | `systematic-debugging` | temper, inline | temper, inline, a ticket at a time | nothing | nothing |
+| Review seats | 4 | 5 | 5 | 5 per ticket | 5 | 0 |
+| Fixes return to the gates | yes | yes | yes | yes | no | no |
+| Ends in | a pull request | a pull request | a pull request | a plan PR, then one PR per ticket | a verdict | removed worktrees and branches, local only |
 
 `/feature` has four review seats rather than five because Superpowers' build loop
 already ran the quality review on the whole branch.
 
 ## The shared ending
 
-Every command except `/review` finishes with the same two skills.
+Every command except `/review` and `/cleanup` finishes with the same two skills.
 
 ### `check`
 
@@ -543,8 +580,8 @@ It never merges.
 
 | What | Where | Lifetime |
 |---|---|---|
-| Worktree | `.claude/worktrees/<slug>` | until you remove it |
-| Branch | `feat/`, `fix/` or `refactor/` + slug | until merged |
+| Worktree | `.claude/worktrees/<slug>` | until `/temper:cleanup` removes it |
+| Branch | `feat/`, `fix/` or `refactor/` + slug | until `/temper:cleanup` removes it; the remote copy is yours |
 | Spec, plan, research notes, baseline | `.scratch/<slug>/` | committed on the branch, deleted before the PR |
 | Build ledger | `.superpowers/sdd/<plan>/` | Superpowers' own, gitignored, deleted when its build finishes |
 | Overhaul plan | `.scratch/<effort>/issues/` | committed on the default branch, deleted by the last ticket's PR |
@@ -633,7 +670,8 @@ temper/
 │   ├── bug.md
 │   ├── refactor.md
 │   ├── overhaul.md
-│   └── review.md
+│   ├── review.md
+│   └── cleanup.md
 ├── skills/
 │   ├── start/               worktree from main, branch named for the work
 │   ├── baseline/            a refactor's before: the gates, caching off
