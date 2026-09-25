@@ -249,9 +249,10 @@ It lists every worktree under `.claude/worktrees/` and every local `feat/`, `fix
 `refactor/` or `worktree-` branch, and sorts each one: **landed** (its PR merged,
 or it's already in `main`), **empty**, **orphaned** (its folder is gone),
 **abandoned** (its PR closed without merging), or **live**. Live means an open
-PR, uncommitted changes, commits that exist nowhere else, a locked worktree, or
-something it couldn't check. It asks once, with the safe ones already ticked and
-live ones not offered, and removes only what you pick.
+PR, uncommitted changes, commits that exist nowhere else, a locked worktree, the
+branch is checked out in the main checkout, or something it couldn't check. It
+asks once, with landed, empty and orphaned ones already ticked, abandoned ones
+offered unticked, and live ones not offered, and removes only what you pick.
 
 It works locally only. Remote branches are never deleted or changed. Without `gh`
 signed in it still runs, but anything that needs a PR to decide counts as live.
