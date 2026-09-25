@@ -245,9 +245,10 @@ From the main checkout:
 /temper:cleanup
 ```
 
-It lists every worktree under `.claude/worktrees/` and every local `feat/`, `fix/`,
-`refactor/` or `worktree-` branch. Each one is **done** if its PR merged (or,
-without `gh`, it's already in `main`), it has no commits that exist nowhere else,
+It lists every local `feat/`, `fix/`, `refactor/` or `worktree-` branch, with its
+worktree under `.claude/worktrees/` if it has one, and never touches `main` or any
+other branch. Each one is **done** if its PR merged or it's
+already on the default branch, it has no commits that exist nowhere else,
 and its worktree is unlocked with no uncommitted changes. Everything else is
 **kept**, with the reason. It asks once: remove the done ones, or nothing.
 

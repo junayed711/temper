@@ -15,10 +15,14 @@ branch and path you put in a command.
 Stop unless `git rev-parse --path-format=absolute --git-dir --git-common-dir`
 prints the same path twice: git can't remove the worktree you're standing in.
 
-Run `git fetch --no-prune origin`; if it fails, say so and carry on. List the
-candidates from `git worktree list --porcelain` and `git branch --list`. Leave out
-anything whose branch name or path has a character outside `A-Za-z0-9._/-`, and
-say so; those are for the user to remove by hand.
+Run `git fetch --no-prune origin`; if it fails, say so and carry on. The
+candidates are the local branches from
+`git branch --format='%(refname:short)' --list 'feat/*' 'fix/*' 'refactor/*' 'worktree-*'`,
+each with its worktree if `git worktree list --porcelain` shows one under
+`.claude/worktrees/` on that branch. Never touch anything else: the main
+checkout, the default branch, detached worktrees, or any other branch. Leave out
+any candidate whose branch name, or path inside the repo, has a character outside
+`A-Za-z0-9._/-`, and say so; those are for the user to remove by hand.
 
 Done when you have the candidates.
 
@@ -35,8 +39,9 @@ An item is **done** when all of these hold:
 - its worktree, if it has one, is not locked and
   `git -C <path> status --porcelain --untracked-files=all` prints nothing
 
-Everything else is **kept**. That includes anything a check failed on. Note why,
-in a few words.
+Everything else is **kept**. That includes anything a check failed on: a check
+that errors, or exits other than as expected, counts as failed. Note why, in a
+few words.
 
 Done when every item is done or kept.
 
