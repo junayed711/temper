@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 # Builds a throwaway project with a bare local origin and one temper
-# worktree or branch per cleanup state. Usage: fixture.sh <new dir>
+# worktree or branch per cleanup state, plus a stub gh in <new dir>/bin for the
+# run with PR checks on. Usage: fixture.sh <new dir>
 set -euo pipefail
 T="${1:?usage: fixture.sh <new dir>}"
+HERE="$(cd "$(dirname "$0")" && pwd)"
 mkdir -p "$T"
 cd "$T"
 git init -q --bare -b main origin.git
@@ -69,5 +71,65 @@ git add f
 git commit -qm foo
 git switch -q main
 
+# closed: pushed, its PR closed without merging, then its folder deleted by hand
+git worktree add -q -b feat/closed "$W/closed"
+echo c > "$W/closed/c"
+git -C "$W/closed" add c
+git -C "$W/closed" commit -qm closed
+git -C "$W/closed" push -q origin feat/closed
+rm -rf "$W/closed"
+
+# review: pushed, its PR still open
+git worktree add -q -b feat/review "$W/review"
+echo r > "$W/review/r"
+git -C "$W/review" add r
+git -C "$W/review" commit -qm review
+git -C "$W/review" push -q origin feat/review
+
+# autodeleted: squash-merged by PR, remote branch and its tracking ref long gone
+git switch -q -c fix/autodeleted
+echo x > x
+git add x
+git commit -qm autodeleted
+git push -q origin fix/autodeleted
+git switch -q main
+git merge -q --squash fix/autodeleted
+git commit -qm "squash fix/autodeleted"
+git push -q origin main
+git push -q origin --delete fix/autodeleted
+
+# lostwork: detached, with a commit that exists nowhere else, folder deleted
+git worktree add -q --detach "$W/lostwork"
+echo l > "$W/lostwork/l"
+git -C "$W/lostwork" add l
+git -C "$W/lostwork" commit -qm lostwork
+git -C "$W/lostwork" rev-parse HEAD > "$T/lostwork-sha.txt"
+rm -rf "$W/lostwork"
+
+# other: under .claude/worktrees/ but on a branch temper didn't make
+git worktree add -q -b scratch/other "$W/other"
+
+# elsewhere: a temper branch checked out in a worktree outside .claude/worktrees/
+git worktree add -q -b feat/elsewhere "$T/elsewhere"
+
+# GitHub deleted fix/squashed's branch after the merge; this clone prunes on fetch
+git -C "$T/origin.git" update-ref -d refs/heads/fix/squashed
+git config fetch.prune true
+# the clone was of an empty origin, so set origin/HEAD now, as a fetch would
+git remote set-head origin main
+
+# the stub gh and the pull requests it knows about
+mkdir -p "$T/bin"
+cp "$HERE/gh" "$T/bin/gh"
+chmod +x "$T/bin/gh"
+{
+  echo "fix/squashed merged $(git rev-parse fix/squashed)"
+  echo "fix/autodeleted merged $(git rev-parse fix/autodeleted)"
+  echo "refactor/unpushed merged $(git rev-parse refactor/unpushed^)"
+  echo "feat/closed closed $(git rev-parse feat/closed)"
+  echo "feat/review open $(git rev-parse feat/review)"
+} > "$T/bin/prs.txt"
+
 git -C "$T/origin.git" for-each-ref --format='%(refname) %(objectname)' > "$T/remote-before.txt"
-echo "fixture ready: $T/proj"
+git for-each-ref --format='%(refname) %(objectname)' refs/remotes > "$T/tracking-before.txt"
+echo "fixture ready: $T/proj (for PR checks on, put $T/bin first on PATH)"

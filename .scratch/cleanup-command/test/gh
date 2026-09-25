@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+# A stand-in for gh, so /temper:cleanup can run with PR checks on against the
+# fixture. fixture.sh copies it to <fixture>/bin/gh next to prs.txt, whose lines
+# are "<branch> <open|closed|merged> <headRefOid>". Put <fixture>/bin first on PATH.
+set -uo pipefail
+table="$(dirname "$0")/prs.txt"
+
+case "$*" in
+  "auth status"*) echo "Logged in to github.com as fixture"; exit 0 ;;
+  "repo view --json defaultBranchRef"*) echo main; exit 0 ;;
+esac
+
+[ "${1:-} ${2:-}" = "pr list" ] || { echo "gh stub: unsupported: gh $*" >&2; exit 1; }
+shift 2
+head="" state=open json=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --head|-H) head="$2"; shift 2 ;;
+    --state|-s) state="$2"; shift 2 ;;
+    --json) json="$2"; shift 2 ;;
+    --limit|-L) shift 2 ;;
+    *) echo "gh stub: unsupported flag: $1" >&2; exit 1 ;;
+  esac
+done
+
+# Like gh, --state closed also lists merged pull requests.
+n=0 rows=()
+while read -r b s oid; do
+  [ -z "$b" ] && continue
+  n=$((n + 1))
+  [ -n "$head" ] && [ "$b" != "$head" ] && continue
+  case "$state" in
+    all) ;;
+    closed) [ "$s" = closed ] || [ "$s" = merged ] || continue ;;
+    *) [ "$s" = "$state" ] || continue ;;
+  esac
+  rows+=("$n $b $s $oid")
+done < "$table"
+
+if [ -z "$json" ]; then
+  for r in ${rows[@]+"${rows[@]}"}; do
+    set -- $r
+    printf '%s\t%s\t%s\t%s\n' "$1" "pr for $2" "$2" "$(echo "$3" | tr a-z A-Z)"
+  done
+  exit 0
+fi
+
+out="" sep=""
+for r in ${rows[@]+"${rows[@]}"}; do
+  set -- $r
+  obj="" osep=""
+  for f in ${json//,/ }; do
+    case "$f" in
+      number) v="$1" ;;
+      headRefName) v="\"$2\"" ;;
+      state) v="\"$(echo "$3" | tr a-z A-Z)\"" ;;
+      headRefOid) v="\"$4\"" ;;
+      *) echo "gh stub: unsupported field: $f" >&2; exit 1 ;;
+    esac
+    obj="$obj$osep\"$f\":$v"; osep=","
+  done
+  out="$out$sep{$obj}"; sep=","
+done
+echo "[$out]"
