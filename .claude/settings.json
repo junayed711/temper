@@ -1,0 +1,39 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v gatebolt >/dev/null 2>&1 && exec gatebolt hook guard || { [ \"$GATEBOLT_ENFORCE\" = strict ] && { echo \"GateBolt: CLI not found on PATH - install it: npm i -g @gatebolt/cli\" >&2; printf '%s\\n' '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"GateBolt: CLI not found on PATH - install it: npm i -g @gatebolt/cli\"}}'; }; exit 0; }"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v gatebolt >/dev/null 2>&1 && exec gatebolt hook post-turn || echo \"GateBolt: CLI not found on PATH - install it: npm i -g @gatebolt/cli\" >&2"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v gatebolt >/dev/null 2>&1 && exec gatebolt hook prompt || echo \"GateBolt: CLI not found on PATH - install it: npm i -g @gatebolt/cli\" >&2"
+          }
+        ]
+      }
+    ]
+  },
+  "env": {
+    "GATEBOLT_ENFORCE": "strict",
+    "GATEBOLT_CLI": "gatebolt"
+  }
+}
