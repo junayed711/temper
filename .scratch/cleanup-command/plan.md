@@ -22,7 +22,7 @@ finish takes the place of `superpowers:finishing-a-development-branch` here.
 - Before editing any file, declare it: `gatebolt declare --task "<one line>" --vendor claude_code --name "Claude Code" --model <model id> --file <path> ...`. The repo runs GateBolt strict mode; undeclared edits are blocked.
 - Gate: `claude plugin validate .` must pass after every task.
 - Commits: subject line only, with no body and no trailer (not even Co-Authored-By); lowercase, at most 80 characters, saying what changed; one logical change per commit, and each commit passes its gates.
-- The command acts only on the repo it's run in, and only locally. It never runs `git push`, `git push --delete`, `git fetch --prune`, `git remote prune`, `gh pr close`, or anything else that changes the remote or its tracking refs. Its one remote call is a plain `git fetch origin`.
+- The command acts only on the repo it's run in, and only locally. It never runs `git push`, `git push --delete`, `git fetch --prune`, `git remote prune`, `gh pr close`, or anything else that changes the remote or its tracking refs. Its one remote call is `git fetch --no-prune origin`, since a user's `fetch.prune` or `remote.origin.prune` setting would make a plain fetch prune.
 - Candidates are only worktrees under `.claude/worktrees/` and local branches named `feat/*`, `fix/*`, `refactor/*` or `worktree-*`. Nothing else is listed or touched.
 - It never uses `git worktree remove --force`.
 - Command files follow the house style of `commands/review.md` and `commands/bug.md`: YAML frontmatter with `description`, a `# temper <name>` title, numbered `## N.` steps, each ending in a `Done when …` line. The voice is plain and short.
@@ -215,7 +215,7 @@ Done when you're in the main checkout.
 
 ## 2. Bring origin up to date
 
-`git fetch origin`, with no `--prune`, so "landed" is judged against the default
+`git fetch --no-prune origin`, so "landed" is judged against the default
 branch as it is on the remote now. If the fetch fails, say so and carry on against
 the last fetched state.
 
@@ -466,7 +466,7 @@ After the `/temper:review` diagram and before "### Side by side", insert:
 ```mermaid
 flowchart TD
     here["Main checkout<br/>stops if inside a worktree"]:::temper
-    fetch["git fetch origin<br/>no prune; PR checks if gh works"]:::temper
+    fetch["git fetch --no-prune origin<br/>PR checks if gh works"]:::temper
     find["Find temper's worktrees and branches<br/>.claude/worktrees, feat/ fix/ refactor/ worktree-"]:::temper
     sort["Sort each one<br/>landed, empty, orphaned, abandoned, live"]:::temper
     ask(["You pick from one list<br/>safe ones ticked, live ones not offered"]):::you
