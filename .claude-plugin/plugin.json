@@ -1,6 +1,6 @@
 {
   "name": "temper",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Takes rough work from an idea to a reviewed pull request: grilled and specified with Matt Pocock's skills, planned and built with Superpowers, then gated, reviewed and verified.",
   "author": {
     "name": "Junayed"
