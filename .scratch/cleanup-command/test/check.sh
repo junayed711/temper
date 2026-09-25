@@ -10,11 +10,11 @@ fail=0
 
 case "$MODE" in
   off)
-    want_branches="feat/closed feat/dirty feat/elsewhere feat/locked feat/review fix/autodeleted fix/squashed main refactor/unpushed scratch/foo scratch/other"
-    want_worktrees="closed dirty locked lostwork other review squashed unpushed" ;;
+    want_branches='feat/closed feat/dirty feat/elsewhere feat/locked feat/review feat/x;echo${IFS}pwned fix/autodeleted fix/squashed main refactor/unpushed scratch/foo scratch/other'
+    want_worktrees="closed dirty locked lostwork other review squashed unpushed unusual" ;;
   on)
-    want_branches="feat/closed feat/dirty feat/elsewhere feat/locked feat/review main refactor/unpushed scratch/foo scratch/other"
-    want_worktrees="closed dirty locked lostwork other review unpushed" ;;
+    want_branches='feat/closed feat/dirty feat/elsewhere feat/locked feat/review feat/x;echo${IFS}pwned main refactor/unpushed scratch/foo scratch/other'
+    want_worktrees="closed dirty locked lostwork other review unpushed unusual" ;;
   *) echo "usage: check.sh <fixture dir> <off|on>"; exit 2 ;;
 esac
 
