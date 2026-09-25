@@ -245,17 +245,16 @@ From the main checkout:
 /temper:cleanup
 ```
 
-It lists every local `feat/`, `fix/`, `refactor/` or `worktree-` branch, with its
-worktree under `.claude/worktrees/` if it has one, and never touches `main` or any
-other branch. Each one is **done** if its PR merged or it's
-already on the default branch, it has no commits that exist nowhere else,
-and its worktree is unlocked with no uncommitted changes. Everything else is
-**kept**, with the reason. It asks once: remove the done ones, or nothing.
+It shows every worktree in the project. Each local `feat/`, `fix/`, `refactor/`
+or `worktree-` branch gets a number and its details: whether its PR is open,
+merged or closed, whether it's already in `main`, whether anything exists only
+locally, and whether its worktree has uncommitted changes. Other worktrees are
+shown without a number, and `main` is never touched. You name the numbers to
+delete, or none. It refuses any you name that still hold work, and says why.
 
 It works locally only: remote branches are never deleted or changed, and the
-fetch never prunes. Removing a worktree also deletes the gitignored files in it,
-such as `.env` copies. Anything it keeps, like a closed PR's branch, is yours to
-remove by hand.
+fetch never prunes. Deleting a worktree also deletes the gitignored files in it,
+such as `.env` copies.
 
 ### The start line
 
@@ -313,8 +312,8 @@ Uninstalling leaves every repo's own files as they were. In each one:
 - **An overhaul that didn't finish** — its plan is still committed in
   `.scratch/<effort>/`. Delete the folder, then commit.
 - **Worktrees and branches runs left behind** — run `/temper:cleanup` before
-  uninstalling. It offers to remove the ones whose work landed, and lists the rest
-  so you can save what you want and remove them yourself.
+  uninstalling. It shows each one's PR and merge state, deletes the ones you name,
+  and refuses any that still hold work, so you can save what you want first.
 - **`.superpowers/`** — a build that stopped partway through can leave its
   workspace here. It's gitignored, so delete the folder.
 
@@ -506,11 +505,11 @@ flowchart TD
 flowchart TD
     here["Main checkout<br/>stops if inside a worktree"]:::temper
     fetch["git fetch --no-prune origin<br/>PR checks if gh works"]:::temper
-    find["Find temper's worktrees and branches<br/>.claude/worktrees, feat/ fix/ refactor/ worktree-"]:::temper
-    sort["Sort each one<br/>done: merged, pushed, clean<br/>kept: everything else"]:::temper
-    ask(["You answer once<br/>remove the done ones, or nothing"]):::you
-    remove["Remove, local only<br/>worktree remove, then branch -D"]:::temper
-    report["Report what went and what stayed"]:::temper
+    find["List every worktree<br/>number temper's: feat/ fix/ refactor/ worktree-"]:::temper
+    sort["Details for each<br/>PR, in main, pushed, uncommitted changes"]:::temper
+    ask(["You name the numbers to delete<br/>or none"]):::you
+    remove["Delete the named ones, local only<br/>refuses any that hold work"]:::temper
+    report["Report what went and what was refused"]:::temper
 
     here --> fetch --> find --> sort --> ask --> remove --> report
 
