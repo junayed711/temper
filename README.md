@@ -255,7 +255,7 @@ It lists every worktree under `.claude/worktrees/` and every local `feat/`, `fix
 - **abandoned**: its PR closed without merging.
 - **live**: an open PR, uncommitted changes, commits that exist nowhere else, a
   locked worktree, a branch temper didn't make, a branch checked out somewhere
-  else, or something it couldn't check.
+  else, unusual characters in its name, or something it couldn't check.
 
 It shows them in one numbered table and asks once: remove the ticked ones
 (landed, empty and orphaned), also remove the abandoned ones, or remove nothing.
@@ -531,15 +531,15 @@ flowchart TD
 
 ### Side by side
 
-| | `/feature` | `/bug` | `/refactor` | `/overhaul` | `/review` |
-|---|---|---|---|---|---|
-| Branch | `feat/<slug>` | `fix/<slug>` | `refactor/<slug>` | `refactor/<effort>`, then `refactor/<effort>-<NN>` | the one you're in |
-| You type a command | `/to-spec` | — | — | `/to-tickets` | — |
-| Last question | okay the task list | end of the grill | end of the grill | run this ticket? | the intent |
-| Built by | Superpowers' build loop | `systematic-debugging` | temper, inline | temper, inline, a ticket at a time | nothing |
-| Review seats | 4 | 5 | 5 | 5 per ticket | 5 |
-| Fixes return to the gates | yes | yes | yes | yes | no |
-| Ends in | a pull request | a pull request | a pull request | a plan PR, then one PR per ticket | a verdict |
+| | `/feature` | `/bug` | `/refactor` | `/overhaul` | `/review` | `/cleanup` |
+|---|---|---|---|---|---|---|
+| Branch | `feat/<slug>` | `fix/<slug>` | `refactor/<slug>` | `refactor/<effort>`, then `refactor/<effort>-<NN>` | the one you're in | none of its own |
+| You type a command | `/to-spec` | — | — | `/to-tickets` | — | — |
+| Last question | okay the task list | end of the grill | end of the grill | run this ticket? | the intent | what to remove |
+| Built by | Superpowers' build loop | `systematic-debugging` | temper, inline | temper, inline, a ticket at a time | nothing | nothing |
+| Review seats | 4 | 5 | 5 | 5 per ticket | 5 | 0 |
+| Fixes return to the gates | yes | yes | yes | yes | no | no |
+| Ends in | a pull request | a pull request | a pull request | a plan PR, then one PR per ticket | a verdict | removed worktrees and branches, local only |
 
 `/feature` has four review seats rather than five because Superpowers' build loop
 already ran the quality review on the whole branch.
