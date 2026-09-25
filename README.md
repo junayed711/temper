@@ -246,26 +246,15 @@ From the main checkout:
 ```
 
 It lists every worktree under `.claude/worktrees/` and every local `feat/`, `fix/`,
-`refactor/` or `worktree-` branch, and sorts each one:
+`refactor/` or `worktree-` branch. Each one is **done** if its PR merged (or,
+without `gh`, it's already in `main`), it has no commits that exist nowhere else,
+and its worktree is unlocked with no uncommitted changes. Everything else is
+**kept**, with the reason. It asks once: remove the done ones, or nothing.
 
-- **landed**: its PR merged. Without `gh`, landed means it's already in `main`.
-- **empty**: a run that never got past the grill, with nothing beyond `main` and
-  no PR.
-- **orphaned**: its folder is gone and its branch is landed or empty.
-- **abandoned**: its PR closed without merging.
-- **live**: an open PR, uncommitted changes, commits that exist nowhere else, a
-  locked worktree, a branch temper didn't make, a branch checked out somewhere
-  else, unusual characters in its name, or something it couldn't check.
-
-It shows them in one numbered table and asks once: remove the ticked ones
-(landed, empty and orphaned), also remove the abandoned ones, or remove nothing.
-You can name item numbers instead. Live ones are never offered.
-
-It works locally only. Remote branches are never deleted or changed, and the
-fetch never prunes. Without `gh` signed in it still runs, but anything that needs
-a PR to decide counts as live. Removing a worktree also deletes the gitignored
-files in it, such as `.env` copies or a `.superpowers/` ledger. Picking nothing
-removes nothing, so running it is also a way to look.
+It works locally only: remote branches are never deleted or changed, and the
+fetch never prunes. Removing a worktree also deletes the gitignored files in it,
+such as `.env` copies. Anything it keeps, like a closed PR's branch, is yours to
+remove by hand.
 
 ### The start line
 
@@ -323,9 +312,8 @@ Uninstalling leaves every repo's own files as they were. In each one:
 - **An overhaul that didn't finish** — its plan is still committed in
   `.scratch/<effort>/`. Delete the folder, then commit.
 - **Worktrees and branches runs left behind** — run `/temper:cleanup` before
-  uninstalling. It offers to remove the ones whose work landed or never started,
-  and lists the ones still holding work, so you can save what you want and remove
-  them yourself.
+  uninstalling. It offers to remove the ones whose work landed, and lists the rest
+  so you can save what you want and remove them yourself.
 - **`.superpowers/`** — a build that stopped partway through can leave its
   workspace here. It's gitignored, so delete the folder.
 
@@ -518,8 +506,8 @@ flowchart TD
     here["Main checkout<br/>stops if inside a worktree"]:::temper
     fetch["git fetch --no-prune origin<br/>PR checks if gh works"]:::temper
     find["Find temper's worktrees and branches<br/>.claude/worktrees, feat/ fix/ refactor/ worktree-"]:::temper
-    sort["Sort each one<br/>landed, empty, orphaned, abandoned, live"]:::temper
-    ask(["You answer once<br/>landed, empty, orphaned ticked<br/>live never offered"]):::you
+    sort["Sort each one<br/>done: merged, pushed, clean<br/>kept: everything else"]:::temper
+    ask(["You answer once<br/>remove the done ones, or nothing"]):::you
     remove["Remove, local only<br/>worktree remove, then branch -D"]:::temper
     report["Report what went and what stayed"]:::temper
 
