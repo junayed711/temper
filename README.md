@@ -43,8 +43,9 @@ framework, SDK, CLI or hosted API is looked up there, pinned to the version the
 repo uses, never answered from memory or the web. Install it however you like —
 the `context7` plugin, or `npx ctx7 setup --claude` for the CLI and its
 `find-docs` skill — and temper uses whichever path it finds. When none is there,
-or it can't answer, the run reads that thing's source in the repo instead, records
-a ruling naming where the fact came from, and carries on.
+or it can't answer, the run stops and asks you, even after the start line. If you
+can't find the fact either, it reads that thing's installed source in the repo.
+Either way it records a ruling naming where the fact came from.
 
 **pstack is deliberately not used.** Its session-start hook tells every session,
 in every repo, to treat `poteto-mode` as the entry point for all engineering
@@ -251,6 +252,9 @@ Each command asks everything up front and then stops asking. After that point a
 run never waits on you: when it hits a judgement call it decides, records the
 decision, and carries on. Every decision it made on your behalf is listed in the
 pull request.
+
+The one exception is documentation. When a run needs a fact about a library and
+Context7 can't answer, it stops and asks you rather than guess.
 
 ### When a run stops
 
@@ -573,8 +577,10 @@ It never merges.
   to last, attached to the change it explains.
 - **Every run gets a worktree from `main`, with a branch named for the work.**
   Claude Code names worktree branches `worktree-<name>`; temper renames them.
-- **Nothing is asked after the start line.** A run that waits on you costs your
-  whole day; a wrong decision recorded in the PR costs a review comment.
+- **Nothing is asked after the start line, except a missing documentation fact.**
+  A run that waits on you costs your whole day; a wrong decision recorded in the
+  PR costs a review comment. A library fact is the exception: built on a guess,
+  it breaks in ways a review may not catch.
 - **Fixes go back through the gates.** A fix is a new commit, so the gates you
   ran no longer describe what would be pushed.
 - **A refactor never goes through `writing-plans`.** It makes every task a failing

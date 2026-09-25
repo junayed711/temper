@@ -107,7 +107,10 @@ section after the header if the plan has none:
 ```markdown
 - Documentation: load `temper:docs` before settling any question about a library,
   framework, SDK, CLI or hosted API, and append each ruling it asks for to
-  `.scratch/<slug>/rulings.md`.
+  `.scratch/<slug>/rulings.md`. When Context7 can't answer, or holds only
+  another version, stop the task and report that it needs context, naming the
+  fact, the library, the repo's version and the closest version it found.
+  The dispatching session asks the user; it never answers from memory.
 ```
 
 Use the real slug in that path, then commit the plan following the Commits field.
@@ -123,11 +126,13 @@ Done when both are in `plan.md` and the plan is committed.
 ### B4. The start line
 
 Show the user the plan's tasks — the `### Task N:` headings, one line each — and
-ask: *Start the build? Nothing is asked from here until the pull request.* Change
-the plan as they ask, and show the tasks again.
+ask: *Start the build? Nothing is asked from here until the pull request, except
+a documentation fact Context7 can't answer.* Change the plan as they ask, and show
+the tasks again.
 
 From here on, a question you'd have asked is a decision you make: take the choice
-the spec supports best, note it for the pull request, and carry on.
+the spec supports best, note it for the pull request, and carry on. The one
+exception is `temper:docs`: when Context7 can't answer, stop and ask.
 
 Done when the user says go.
 

@@ -42,10 +42,12 @@ Done when the user has confirmed the four answers and `spec.md` is committed.
 
 ## 3. The start line
 
-Tell the user: *Start line — nothing is asked from here until the pull request.*
+Tell the user: *Start line — nothing is asked from here until the pull request,
+except a documentation fact Context7 can't answer.*
 
 From here on, a question you'd have asked is a decision you make: take the choice
-the spec supports best, note it for the pull request, and carry on.
+the spec supports best, note it for the pull request, and carry on. The one
+exception is `temper:docs`: when Context7 can't answer, stop and ask.
 
 ## 4. Root cause, then the fix
 
