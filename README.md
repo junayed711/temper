@@ -155,7 +155,8 @@ those change; it shows what it would change rather than overwriting.
 ## How to use it
 
 **Start every command from the repo's main checkout, on `main`, with a clean
-tree** — except `/temper:review`, which runs inside the worktree it's reviewing.
+tree** — except `/temper:review`, which runs inside the worktree it's reviewing,
+and `/temper:cleanup`, which runs from the main checkout on any branch.
 temper creates the worktree and the branch itself.
 
 ### Build something new
@@ -236,6 +237,26 @@ the branch's spec if temper built it, otherwise it asks you one line about what
 the change should do. It reports a verdict and changes nothing — no fixes, no
 commits, no PR.
 
+### Clean up after runs
+
+From the main checkout:
+
+```
+/temper:cleanup
+```
+
+It lists every worktree under `.claude/worktrees/` and every local `feat/`, `fix/`,
+`refactor/` or `worktree-` branch, and sorts each one: **landed** (its PR merged,
+or it's already in `main`), **empty**, **orphaned** (its folder is gone),
+**abandoned** (its PR closed without merging), or **live**. Live means an open
+PR, uncommitted changes, commits that exist nowhere else, a locked worktree, or
+something it couldn't check. It asks once, with the safe ones already ticked and
+live ones not offered, and removes only what you pick.
+
+It works locally only. Remote branches are never deleted or changed. Without `gh`
+signed in it still runs, but anything that needs a PR to decide counts as live.
+Picking nothing removes nothing, so running it is also a way to look.
+
 ### The start line
 
 Each command asks everything up front and then stops asking. After that point a
@@ -256,8 +277,8 @@ report says what stopped it and where it got to.
 
 ### After the pull request
 
-temper never merges. The worktree stays for PR feedback; remove it yourself once
-the work lands.
+temper never merges. The worktree stays for PR feedback; once the work lands,
+`/temper:cleanup` removes it and its branch.
 
 ## Uninstall
 
@@ -291,10 +312,10 @@ Uninstalling leaves every repo's own files as they were. In each one:
 - **`.claude/temper.md`** — delete it, then commit.
 - **An overhaul that didn't finish** — its plan is still committed in
   `.scratch/<effort>/`. Delete the folder, then commit.
-- **Runs that didn't finish** — `git worktree list` shows any left under
-  `.claude/worktrees/`, each on a `feat/`, `fix/` or `refactor/` branch holding its
-  `.scratch/` folder. Once you've saved anything you want from one, remove it with
-  `git worktree remove .claude/worktrees/<slug>`, then delete its branch.
+- **Worktrees and branches runs left behind** — run `/temper:cleanup` before
+  uninstalling. It removes the ones whose work landed or never started, and lists
+  the ones still holding work, so you can save what you want and remove them
+  yourself.
 - **`.superpowers/`** — a build that stopped partway through can leave its
   workspace here. It's gitignored, so delete the folder.
 
@@ -480,6 +501,24 @@ flowchart TD
     classDef temper fill:#F1EFE8,stroke:#5F5E5A,color:#2C2C2A
 ```
 
+### `/temper:cleanup`
+
+```mermaid
+flowchart TD
+    here["Main checkout<br/>stops if inside a worktree"]:::temper
+    fetch["git fetch origin<br/>no prune; PR checks if gh works"]:::temper
+    find["Find temper's worktrees and branches<br/>.claude/worktrees, feat/ fix/ refactor/ worktree-"]:::temper
+    sort["Sort each one<br/>landed, empty, orphaned, abandoned, live"]:::temper
+    ask(["You pick from one list<br/>safe ones ticked, live ones not offered"]):::you
+    remove["Remove, local only<br/>worktree remove, then branch -D"]:::temper
+    report["Report what went and what stayed"]:::temper
+
+    here --> fetch --> find --> sort --> ask --> remove --> report
+
+    classDef you fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+    classDef temper fill:#F1EFE8,stroke:#5F5E5A,color:#2C2C2A
+```
+
 ### Side by side
 
 | | `/feature` | `/bug` | `/refactor` | `/overhaul` | `/review` |
@@ -497,7 +536,7 @@ already ran the quality review on the whole branch.
 
 ## The shared ending
 
-Every command except `/review` finishes with the same two skills.
+Every command except `/review` and `/cleanup` finishes with the same two skills.
 
 ### `check`
 
@@ -543,8 +582,8 @@ It never merges.
 
 | What | Where | Lifetime |
 |---|---|---|
-| Worktree | `.claude/worktrees/<slug>` | until you remove it |
-| Branch | `feat/`, `fix/` or `refactor/` + slug | until merged |
+| Worktree | `.claude/worktrees/<slug>` | until `/temper:cleanup` removes it |
+| Branch | `feat/`, `fix/` or `refactor/` + slug | until `/temper:cleanup` removes it; the remote copy is yours |
 | Spec, plan, research notes, baseline | `.scratch/<slug>/` | committed on the branch, deleted before the PR |
 | Build ledger | `.superpowers/sdd/<plan>/` | Superpowers' own, gitignored, deleted when its build finishes |
 | Overhaul plan | `.scratch/<effort>/issues/` | committed on the default branch, deleted by the last ticket's PR |
@@ -633,7 +672,8 @@ temper/
 │   ├── bug.md
 │   ├── refactor.md
 │   ├── overhaul.md
-│   └── review.md
+│   ├── review.md
+│   └── cleanup.md
 ├── skills/
 │   ├── start/               worktree from main, branch named for the work
 │   ├── baseline/            a refactor's before: the gates, caching off
