@@ -90,8 +90,7 @@ Done when `plan.md` is saved with its tasks.
 
 ### B3. Pin temper's rules into the plan
 
-Add these two sections directly after the plan's header, then commit the plan
-following the Commits field:
+Add this section directly after the plan's header:
 
 ```markdown
 ## Handing back to temper
@@ -100,20 +99,26 @@ This plan runs inside a temper run. When every task is complete and the final
 whole-branch review is clean, end with your list of rulings and hand control back
 to `/temper:feature`, which checks the branch and opens the pull request. temper's
 finish takes the place of `superpowers:finishing-a-development-branch` here.
-
-## Documentation in this run
-
-Load `temper:docs` before you settle any documentation question, and tell every
-subagent a task dispatches to do the same. Append each ruling it asks for to
-`.scratch/<slug>/rulings.md`, which temper reads when it writes the pull request.
 ```
 
-Use the real slug in that path. When a long session compacts, instructions in the
-conversation get summarised, but the build loop's ledger names this plan file as
-the one it's running, and each implementer subagent reads the plan rather than
-this conversation. Putting the rules there keeps them where both are pointed.
+Then add this line to the plan's `## Global Constraints` section, creating the
+section after the header if the plan has none:
 
-Done when both sections are in `plan.md` and the plan is committed.
+```markdown
+- Documentation: load `temper:docs` before settling any question about a library,
+  framework, SDK, CLI or hosted API, and append each ruling it asks for to
+  `.scratch/<slug>/rulings.md`.
+```
+
+Use the real slug in that path, then commit the plan following the Commits field.
+
+When a long session compacts, instructions in the conversation get summarised,
+but the build loop's ledger names this plan file as the one it's running, so the
+hand-back belongs in the plan. The documentation rule goes in Global Constraints
+because an implementer subagent never reads the plan: it gets its own task's
+brief and the constraints the build loop copies into its dispatch.
+
+Done when both are in `plan.md` and the plan is committed.
 
 ### B4. The start line
 

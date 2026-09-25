@@ -596,7 +596,8 @@ It never merges.
 - **temper carries its own documentation rule.** Context7's own setup writes a
   user-level rule, which reaches a session but not a subagent that session
   dispatches — and a temper build is subagents. So `temper:docs` states the rule,
-  and temper pins it into the plan and the ticket the subagents actually read. It
+  and temper pins it into the plan's Global Constraints, the one part of a plan
+  the build loop hands every implementer, and into the ticket a reshape reads. It
   adds what the vendor's rule doesn't say: pin the lookup to the repo's version,
   and record where a fact came from when Context7 couldn't answer it.
 - **No pstack.** See Requirements.
@@ -626,8 +627,9 @@ not run. These can only be settled by a real run:
 5. `EnterWorktree` works when called from inside a plugin command.
 6. `/to-tickets` writes to `.scratch/<effort>/issues/` when told so in the
    conversation, without `/setup-matt-pocock-skills` having configured a tracker.
-7. The documentation rule pinned in `plan.md` still reaches implementer subagents
-   after a long session compacts.
+7. The build loop copies the documentation line from the plan's Global
+   Constraints into every implementer's dispatch, including after a long session
+   compacts.
 
 ## Not supported
 
