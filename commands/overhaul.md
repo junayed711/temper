@@ -119,7 +119,9 @@ Done when every ticket passes.
 ### B3. Open the plan's pull request
 
 Commit the tickets following the Commits field of the repo's `.claude/temper.md`,
-then:
+and leave `.scratch/<effort>/rulings.md` out of the commit: the description below
+carries what it holds, and the plan's folder stays on the default branch until its
+last ticket. Then:
 
 1. `git push -u origin refactor/<effort>`.
 2. `gh pr list --head refactor/<effort> --state open --json url`. If one is open,
