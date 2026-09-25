@@ -19,7 +19,7 @@ git commit -qm base
 git push -q origin main
 W=.claude/worktrees
 
-# landed: fast-forward merged into main and pushed
+# landed
 git worktree add -q -b feat/landed "$W/landed"
 echo a > "$W/landed/a"
 git -C "$W/landed" add a
@@ -40,7 +40,6 @@ git push -q origin main
 # empty: a run that ended in the grill
 git worktree add -q -b feat/empty "$W/empty"
 
-# dirty: an uncommitted file
 git worktree add -q -b feat/dirty "$W/dirty"
 echo d > "$W/dirty/d"
 
@@ -58,11 +57,13 @@ git worktree lock "$W/locked"
 git worktree add -q -b feat/gone "$W/gone"
 rm -rf "$W/gone"
 
-# detached: a worktree with no branch, at main
 git worktree add -q --detach "$W/detached"
 
 # stray: a branch whose rename never happened, no worktree
 git branch worktree-stray
+
+# unusual: a valid git ref with shell metacharacters; must stay Live, untouched
+git worktree add -q -b 'feat/x;echo${IFS}pwned' "$W/unusual"
 
 # not temper's: must never be listed or touched
 git switch -q -c scratch/foo
@@ -118,13 +119,13 @@ git config fetch.prune true
 # the clone was of an empty origin, so set origin/HEAD now, as a fetch would
 git remote set-head origin main
 
-# the stub gh and the pull requests it knows about
 mkdir -p "$T/bin"
 cp "$HERE/gh" "$T/bin/gh"
 chmod +x "$T/bin/gh"
 {
   echo "fix/squashed merged $(git rev-parse fix/squashed)"
   echo "fix/autodeleted merged $(git rev-parse fix/autodeleted)"
+  # the parent, not the tip, so the headRefOid mismatch keeps this item Live despite the merged PR
   echo "refactor/unpushed merged $(git rev-parse refactor/unpushed^)"
   echo "feat/closed closed $(git rev-parse feat/closed)"
   echo "feat/review open $(git rev-parse feat/review)"
