@@ -15,6 +15,9 @@ pushed or changed: never `git push`, `git fetch --prune`, `git remote prune` or
 The default branch is as the `start` skill defines it. A temper branch is a local
 branch named `feat/*`, `fix/*`, `refactor/*` or `worktree-*`.
 
+Every branch, path and SHA that goes into a command below is single-quoted, as in
+`git branch -D 'feat/x'`.
+
 ## 1. Where you are
 
 `git rev-parse --path-format=absolute --git-dir --git-common-dir` prints two paths.
@@ -60,6 +63,11 @@ out.
 
 If there are none, say the project has nothing to clean up, and stop.
 
+Any item whose branch name or worktree path has a character outside
+`A-Za-z0-9._/-` is Live now, with the reason "unusual characters in its name;
+remove it by hand". Skip step 4 for it: its name or path never goes into a
+command, and it's shown in the table exactly as it is.
+
 Done when you have the list of items.
 
 ## 4. Sort each item
@@ -68,6 +76,10 @@ Below, the tip is the sha on the `HEAD` line of the item's worktree record, or t
 branch when it has no worktree. Never resolve it from inside the worktree's
 folder, which may be gone. Check the states in this order; the first that matches
 is the item's state. Record the reason in a few words.
+
+An item with no branch has nothing for `gh pr list --head <branch>` to search:
+PR checks don't apply to it. Skip every check below that needs a branch, and sort
+it by git alone.
 
 1. **Live**: kept, never offered. Any of:
    - the worktree is marked `locked`
@@ -82,7 +94,6 @@ is the item's state. Record the reason in a few words.
      on and `gh pr list --head <branch> --state merged --json headRefOid` gives the
      tip itself, so that commit is on GitHub.
    - PR checks are on and `gh pr list --head <branch> --state open` finds one
-   - any check above fails or can't run: "couldn't check <what>"
 2. **Landed**: PR checks are on and `gh pr list --head <branch> --state merged`
    finds one; or PR checks are off and
    `git merge-base --is-ancestor <tip> origin/<default branch>` succeeds.
@@ -92,6 +103,13 @@ is the item's state. Record the reason in a few words.
    succeeds, so it holds nothing that isn't already on the default branch.
 5. **Live**, for everything left: commits of its own with no PR or, with PR checks
    off, a PR state that couldn't be checked.
+
+Any check in steps 1 through 4 above that fails or can't run — not merely finds
+nothing — makes the item Live instead, with reason "couldn't check <what>",
+except where it's skipped for having no branch. `git merge-base --is-ancestor
+<tip> origin/<default branch>` exits 0 when the tip is an ancestor, 1 when it
+isn't, and anything else means the check itself failed, not that it isn't an
+ancestor.
 
 Then the worktrees marked `prunable`, meaning their folder is gone. That changes
 only what happens to git's record of the folder; the item keeps the state it got
