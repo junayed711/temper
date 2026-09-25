@@ -246,17 +246,26 @@ From the main checkout:
 ```
 
 It lists every worktree under `.claude/worktrees/` and every local `feat/`, `fix/`,
-`refactor/` or `worktree-` branch, and sorts each one: **landed** (its PR merged,
-or it's already in `main`), **empty**, **orphaned** (its folder is gone),
-**abandoned** (its PR closed without merging), or **live**. Live means an open
-PR, uncommitted changes, commits that exist nowhere else, a locked worktree, the
-branch is checked out in the main checkout, or something it couldn't check. It
-asks once, with landed, empty and orphaned ones already ticked, abandoned ones
-offered unticked, and live ones not offered, and removes only what you pick.
+`refactor/` or `worktree-` branch, and sorts each one:
 
-It works locally only. Remote branches are never deleted or changed. Without `gh`
-signed in it still runs, but anything that needs a PR to decide counts as live.
-Picking nothing removes nothing, so running it is also a way to look.
+- **landed**: its PR merged. Without `gh`, landed means it's already in `main`.
+- **empty**: a run that never got past the grill, with nothing beyond `main` and
+  no PR.
+- **orphaned**: its folder is gone and its branch is landed or empty.
+- **abandoned**: its PR closed without merging.
+- **live**: an open PR, uncommitted changes, commits that exist nowhere else, a
+  locked worktree, a branch temper didn't make, a branch checked out somewhere
+  else, or something it couldn't check.
+
+It shows them in one numbered table and asks once: remove the ticked ones
+(landed, empty and orphaned), also remove the abandoned ones, or remove nothing.
+You can name item numbers instead. Live ones are never offered.
+
+It works locally only. Remote branches are never deleted or changed, and the
+fetch never prunes. Without `gh` signed in it still runs, but anything that needs
+a PR to decide counts as live. Removing a worktree also deletes the gitignored
+files in it, such as `.env` copies or a `.superpowers/` ledger. Picking nothing
+removes nothing, so running it is also a way to look.
 
 ### The start line
 
@@ -314,9 +323,9 @@ Uninstalling leaves every repo's own files as they were. In each one:
 - **An overhaul that didn't finish** — its plan is still committed in
   `.scratch/<effort>/`. Delete the folder, then commit.
 - **Worktrees and branches runs left behind** — run `/temper:cleanup` before
-  uninstalling. It removes the ones whose work landed or never started, and lists
-  the ones still holding work, so you can save what you want and remove them
-  yourself.
+  uninstalling. It offers to remove the ones whose work landed or never started,
+  and lists the ones still holding work, so you can save what you want and remove
+  them yourself.
 - **`.superpowers/`** — a build that stopped partway through can leave its
   workspace here. It's gitignored, so delete the folder.
 
@@ -507,10 +516,10 @@ flowchart TD
 ```mermaid
 flowchart TD
     here["Main checkout<br/>stops if inside a worktree"]:::temper
-    fetch["git fetch origin<br/>no prune; PR checks if gh works"]:::temper
+    fetch["git fetch --no-prune origin<br/>PR checks if gh works"]:::temper
     find["Find temper's worktrees and branches<br/>.claude/worktrees, feat/ fix/ refactor/ worktree-"]:::temper
     sort["Sort each one<br/>landed, empty, orphaned, abandoned, live"]:::temper
-    ask(["You pick from one list<br/>safe ones ticked, live ones not offered"]):::you
+    ask(["You answer once<br/>landed, empty, orphaned ticked<br/>live never offered"]):::you
     remove["Remove, local only<br/>worktree remove, then branch -D"]:::temper
     report["Report what went and what stayed"]:::temper
 
