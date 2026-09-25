@@ -253,8 +253,10 @@ run never waits on you: when it hits a judgement call it decides, records the
 decision, and carries on. Every decision it made on your behalf is listed in the
 pull request.
 
-The one exception is documentation. When a run needs a fact about a library and
-Context7 can't answer, it stops and asks you rather than guess.
+The one exception is documentation. Before the start line, a feature or
+refactor looks up every library fact its plan relies on and brings you every gap
+at once. A fact nobody could have listed that turns up later, and that Context7
+can't answer, still stops the run and asks you rather than guess.
 
 ### When a run stops
 
@@ -325,7 +327,7 @@ flowchart TD
     spec["You type /to-spec<br/>writes .scratch/slug/spec.md"]:::you
     plan["Write the plan<br/>writing-plans"]:::sp
     pin["Pin temper's rules into plan.md<br/>don't use Superpowers' own finish;<br/>documentation from Context7"]:::temper
-    go(["Start line: you okay the task list"]):::temper
+    go(["Start line: library facts settled,<br/>you okay the task list"]):::temper
 
     subgraph build["subagent-driven-development"]
         direction LR
@@ -394,7 +396,7 @@ flowchart TD
     wt["Worktree from main<br/>EnterWorktree, branch renamed refactor/slug"]:::temper
     base["Baseline<br/>gates green, output recorded<br/>stops if red"]:::temper
     grill["Grill the seam<br/>grilling, codebase-design<br/>stops if it's too wide"]:::matt
-    pin["The pin<br/>a test covers everything that moves<br/>stops if something isn't"]:::temper
+    pin["The pin<br/>a test covers everything that moves<br/>stops if something isn't;<br/>then library facts settled"]:::temper
     go(["Start line: nothing is asked after this"]):::temper
     move["Move it in steps<br/>inline, tests green after each"]:::temper
     gates["Gates plus every baseline test<br/>the repo's own commands"]:::temper
@@ -435,7 +437,7 @@ flowchart TD
     next["next effort<br/>first ticket nothing waits on, confirmed with you"]:::temper
     wt2["Worktree from main<br/>branch refactor/effort-NN"]:::temper
     base["Baseline<br/>gates green, output recorded"]:::temper
-    pin["The pin<br/>a test covers everything that moves"]:::temper
+    pin["The pin<br/>a test covers everything that moves;<br/>then library facts settled"]:::temper
     go(["Start line: nothing is asked after this"]):::temper
     move["Move what the ticket names<br/>tests green after each step"]:::temper
     mark["Mark the ticket done<br/>or delete the plan on the last one"]:::temper
@@ -663,7 +665,7 @@ temper/
 │   ├── start/               worktree from main, branch named for the work
 │   ├── docs/                the documentation rule: Context7, pinned by version
 │   ├── baseline/            a refactor's before: the gates, caching off
-│   ├── reshape/             the pin, then the move in green steps
+│   ├── reshape/             the pin, the docs, then the move in green steps
 │   ├── check/               gates, review panel, fixes, verify, the decision
 │   └── finish/              clear .scratch, gate again, open the PR
 └── agents/

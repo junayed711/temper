@@ -125,7 +125,12 @@ Done when both are in `plan.md` and the plan is committed.
 
 ### B4. The start line
 
-Show the user the plan's tasks — the `### Task N:` headings, one line each — and
+First settle the docs, as `temper:docs` describes under "Before the start line",
+across every task not yet complete. Write each fact into the task that relies on
+it — an implementer reads its own task, never the rest of the plan — and commit
+the plan following the Commits field.
+
+Then show the user the plan's tasks — the `### Task N:` headings, one line each — and
 ask: *Start the build? Nothing is asked from here until the pull request, except
 a documentation fact Context7 can't answer.* Change the plan as they ask, and show
 the tasks again.

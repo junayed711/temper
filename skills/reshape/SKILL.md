@@ -29,12 +29,21 @@ nothing about a refactor of it. Name what's uncovered, recommend pinning its
 current behaviour with tests as a change of its own first, and tell the user the
 worktree holds the baseline and spec, uncommitted.
 
+Done when everything that moves has a test.
+
+## 2. Settle the docs
+
+Settle the docs, as `temper:docs` describes under "Before the start line", for
+every library call the moves rely on. Add what it settles to `spec.md` under
+`## Documentation`, each fact with its version and where it came from. Where the
+moves rely on no library, say so there in one line.
+
 Commit `baseline.md` and `spec.md`, following the Commits field of the repo's
 `.claude/temper.md`.
 
-Done when everything that moves has a test, and both files are committed.
+Done when every fact the moves rely on is settled, and both files are committed.
 
-## 2. The start line
+## 3. The start line
 
 Tell the user: *Start line — nothing is asked from here until the pull request,
 except a documentation fact Context7 can't answer.*
@@ -43,7 +52,7 @@ From here on, a question you'd have asked is a decision you make: take the choic
 the spec supports best, note it for the pull request, and carry on. The one
 exception is `temper:docs`: when Context7 can't answer, stop and ask.
 
-## 3. Move it in steps
+## 4. Move it in steps
 
 With the scope `whole`, in order:
 
