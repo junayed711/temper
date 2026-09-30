@@ -10,6 +10,9 @@ Behaviour that exists and is wrong: $ARGUMENTS
 Each step names the skill that does the work. Load it and follow it; what's
 written here is only what temper adds. With no symptom given, ask for one first.
 
+Load `temper:progress` before the first step. It keeps the user posted for the
+whole run.
+
 ## 1. Start
 
 Load `temper:start` with the kind `fix`.

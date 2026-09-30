@@ -10,6 +10,9 @@ Work that already exists: $ARGUMENTS
 Run from inside the worktree or checkout that holds the work. This command reports;
 the work stays exactly as it is — nothing is committed, pushed or deleted.
 
+Load `temper:progress` before the first step. It keeps the user posted for the
+whole run.
+
 ## 1. Where you are
 
 The default branch is as the `start` skill defines it. If `git branch --show-current`

@@ -21,6 +21,9 @@ Each step names the skill that does the work. Load it and follow it; what's
 written here is only what temper adds. The slug and the default branch are as the
 `start` skill defines them.
 
+Load `temper:progress` before the first step. It keeps the user posted for the
+whole run.
+
 ## The plan
 
 A plan lives at `.scratch/<effort>/issues/<NN>-<name>.md`, one ticket per file,

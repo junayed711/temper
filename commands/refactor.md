@@ -11,6 +11,9 @@ Narrow refactors only — one seam, with callers you can count. Each step names 
 skill that does the work; what's written here is only what temper adds. With no
 ask given, ask what should change shape first.
 
+Load `temper:progress` before the first step. It keeps the user posted for the
+whole run.
+
 ## 1. Start
 
 Load `temper:start` with the kind `refactor`.

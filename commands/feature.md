@@ -16,6 +16,9 @@ This command runs in two halves, split by `/to-spec`, which only a person can ru
 Each step names the skill that does the work. Load it and follow it; what's
 written here is only what temper adds.
 
+Load `temper:progress` before the first step. It keeps the user posted for the
+whole run.
+
 ## Part A — shape it
 
 ### A1. Start
