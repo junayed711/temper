@@ -18,7 +18,7 @@ is good enough to propose.
 | Shaping the work | [Matt Pocock's skills](https://github.com/mattpocock/skills) | `grilling`, `research`, `to-spec`, `to-tickets`, `code-review`, `codebase-design` |
 | Building it | [Superpowers](https://github.com/obra/superpowers) | `writing-plans`, `subagent-driven-development`, `systematic-debugging`, `requesting-code-review` |
 | Isolation and security | Claude Code itself | `EnterWorktree`, `security-review` |
-| Gates, refactor steps, review panel, proposing | temper | `start`, `baseline`, `reshape`, `check`, `finish`, and one agent: `comments-reviewer` |
+| Gates, refactor steps, review panel, proposing | temper | `start`, `baseline`, `reshape`, `check`, `finish`, `progress`, and one agent: `comments-reviewer` |
 
 The rule behind every choice: if a skill already does the job, use it. temper
 has exactly one agent of its own, because the only existing comments pass
@@ -677,7 +677,8 @@ temper/
 │   ├── baseline/            a refactor's before: the gates, caching off
 │   ├── reshape/             the pin, then the move in green steps
 │   ├── check/               gates, review panel, fixes, verify, the decision
-│   └── finish/              clear .scratch, gate again, open the PR
+│   ├── finish/              clear .scratch, gate again, open the PR
+│   └── progress/            one-line updates while a run works
 └── agents/
     └── comments-reviewer.md
 ```
