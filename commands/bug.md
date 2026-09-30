@@ -61,6 +61,9 @@ bug report it works from. It ends in one of three places:
 - **The fix needs design** — a changed contract, a new module, a different data
   shape. Stop, and report that the work needs `/temper:feature`.
 
+While it works, post a progress line for each cause tested and each fix attempted,
+in the shape `debug: <cause or attempt> — <result>`.
+
 Done when the fix is committed, or the run has stopped with its report.
 
 ## 5. Check

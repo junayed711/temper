@@ -102,6 +102,9 @@ This plan runs inside a temper run. When every task is complete and the final
 whole-branch review is clean, end with your list of rulings and hand control back
 to `/temper:feature`, which checks the branch and opens the pull request. temper's
 finish takes the place of `superpowers:finishing-a-development-branch` here.
+
+While it runs, post a progress line as each task starts, as its review comes back,
+and as each fix starts, in the shape `build: task <n>/<total> — <what>`.
 ```
 
 When a long session compacts, instructions in the conversation get summarised,
