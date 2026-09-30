@@ -38,8 +38,8 @@ The phase is the part of the run doing the work, for example `check`, `build`,
 in `start`, the grill, or overhaul part B, uses the command's name, like `bug`
 or `overhaul`.
 
-Take a duration only from a measurement, for example `date +%s` before and
-after the command. If it wasn't measured, leave the duration out. Never
+Time each gate. Note `date +%s` before the command and again after it, and
+report the difference. If a duration wasn't measured, leave it out. Never
 estimate one.
 
 A check reads like this:

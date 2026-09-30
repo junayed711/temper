@@ -263,7 +263,7 @@ run never waits on you: when it hits a judgement call it decides, records the
 decision, and carries on. Every decision it made on your behalf is listed in the
 pull request.
 
-After the start line, a run posts one-line updates as it goes (gates, each
+A run posts one-line updates as it goes (gates, each
 reviewer, each build task), so there is no need to ask what it's doing.
 
 ### When a run stops
