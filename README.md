@@ -18,7 +18,7 @@ is good enough to propose.
 | Shaping the work | [Matt Pocock's skills](https://github.com/mattpocock/skills) | `grilling`, `research`, `to-spec`, `to-tickets`, `code-review`, `codebase-design` |
 | Building it | [Superpowers](https://github.com/obra/superpowers) | `writing-plans`, `subagent-driven-development`, `systematic-debugging`, `requesting-code-review` |
 | Isolation and security | Claude Code itself | `EnterWorktree`, `security-review` |
-| Gates, refactor steps, review panel, proposing | temper | `start`, `baseline`, `reshape`, `check`, `finish`, `progress`, and one agent: `comments-reviewer` |
+| Gates, refactor steps, review panel, proposing, progress updates | temper | `start`, `baseline`, `reshape`, `check`, `finish`, `progress`, and one agent: `comments-reviewer` |
 
 The rule behind every choice: if a skill already does the job, use it. temper
 has exactly one agent of its own, because the only existing comments pass
@@ -262,6 +262,9 @@ Each command asks everything up front and then stops asking. After that point a
 run never waits on you: when it hits a judgement call it decides, records the
 decision, and carries on. Every decision it made on your behalf is listed in the
 pull request.
+
+After the start line, a run posts one-line updates as it goes (gates, each
+reviewer, each build task), so there is no need to ask what it's doing.
 
 ### When a run stops
 
@@ -648,6 +651,8 @@ not run. These can only be settled by a real run:
 5. `EnterWorktree` works when called from inside a plugin command.
 6. `/to-tickets` writes to `.scratch/<effort>/issues/` when told so in the
    conversation, without `/setup-matt-pocock-skills` having configured a tracker.
+7. A run posts its progress lines unprompted. `/temper:review` on any branch is
+   the cheapest check.
 
 ## Not supported
 
