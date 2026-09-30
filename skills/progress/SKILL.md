@@ -33,8 +33,16 @@ Every line has the same shape:
 <phase>: <step> — <what's happening>
 ```
 
-The phase is the part of the run doing the work: `check`, `build`, `debug`,
-`baseline`, `reshape` or `finish`. A check reads like this:
+The phase is the part of the run doing the work, for example `check`, `build`,
+`debug`, `baseline`, `reshape` or `finish`. Work outside those, such as a stop
+in `start`, the grill, or overhaul part B, uses the command's name, like `bug`
+or `overhaul`.
+
+Take a duration only from a measurement, for example `date +%s` before and
+after the command. If it wasn't measured, leave the duration out. Never
+estimate one.
+
+A check reads like this:
 
 ```
 check: gates — running claude plugin validate .
