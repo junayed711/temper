@@ -10,6 +10,9 @@ Behaviour that exists and is wrong: $ARGUMENTS
 Each step names the skill that does the work. Load it and follow it; what's
 written here is only what temper adds. With no symptom given, ask for one first.
 
+Load `temper:progress` before the first step. It keeps the user posted for the
+whole run.
+
 ## 1. Start
 
 Load `temper:start` with the kind `fix`.
@@ -57,6 +60,9 @@ bug report it works from. It ends in one of three places:
   cause as far as it got, each attempt and why it failed, and what's committed.
 - **The fix needs design** — a changed contract, a new module, a different data
   shape. Stop, and report that the work needs `/temper:feature`.
+
+While it works, post a progress line for each cause tested and each fix attempted,
+in the shape `debug: <cause or attempt> — <result>`.
 
 Done when the fix is committed, or the run has stopped with its report.
 
