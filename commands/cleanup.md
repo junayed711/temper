@@ -1,20 +1,25 @@
 ---
-description: "Show every worktree in this project with its PR and merge details, then delete only the temper worktrees and branches you name. Local only: nothing on the remote is touched."
+description: "Show every worktree in this project with its PR and merge details, then delete only the temper worktrees and branches you name. Run from inside a temper worktree, it deals with that one alone. Local only: nothing on the remote is touched."
 ---
 
 # temper cleanup
 
-Shows every worktree in the project you're working in, with enough detail to
-decide, and deletes only the ones the user names. Only temper's items can be
-deleted: local `feat/`, `fix/`, `refactor/` or `worktree-` branches and their
-worktrees under `.claude/worktrees/`. It never touches the remote: no
-`git push`, no `git fetch --prune`, no `gh pr close`. Single-quote every branch
-and path you put in a command.
+Deletes temper's leftover worktrees and branches, and only the ones the user
+approves. Only temper's items can be deleted: local `feat/`, `fix/`, `refactor/`
+or `worktree-` branches and their worktrees under `.claude/worktrees/`. It never
+touches the remote: no `git push`, no `git fetch --prune`, no `gh pr close`.
+Single-quote every branch and path you put in a command.
 
 ## 1. Look
 
-Stop unless `git rev-parse --path-format=absolute --git-dir --git-common-dir`
-prints the same path twice: git can't remove the worktree you're standing in.
+Run `git rev-parse --path-format=absolute --git-dir --git-common-dir`. The
+**main checkout** is the folder that holds the second path. If its path contains
+a single quote, stop: say cleanup can't quote that path safely and the worktrees
+are for the user to remove by hand, and run nothing further. If the two paths
+match, the session is in the main checkout and this is a **full run**: it shows
+every worktree and deletes the ones the user names. If they differ, the session
+is inside a worktree and this is a **current-worktree run**: it deals with that
+worktree alone.
 
 Run `git fetch --no-prune origin`; if it fails, say so and carry on. Then list
 every worktree from `git worktree list --porcelain`, and the temper branches from
@@ -24,15 +29,21 @@ A **temper item** is one of those branches, with its worktree if one under
 `.claude/worktrees/` is on it. Everything else (the main checkout, the default
 branch, detached worktrees, other branches, worktrees outside
 `.claude/worktrees/`) is shown for information and can't be picked. So is any
-branch whose name, or path inside the repo, has a character outside
-`A-Za-z0-9._/-`: it isn't a temper item, run no command with its name in it, and
-say it's for the user to remove by hand.
+branch whose name, or worktree path relative to the main checkout, has a
+character outside `A-Za-z0-9._/-`: it isn't a temper item, run no command with
+its name in it, and say it's for the user to remove by hand.
 
-Done when you have every worktree and every temper item.
+In a current-worktree run the only item is the one whose worktree is
+`git rev-parse --show-toplevel`. If that worktree isn't a temper item, say it's
+for the user to remove by hand, delete nothing, and stop.
+
+Done when you have every worktree and every temper item, or the one item of a
+current-worktree run.
 
 ## 2. Details
 
-For each temper item, find out:
+Run these checks for each temper item. In a current-worktree run, run them for
+that one item only. Find out:
 
 - **PR**: `gh pr list --head <branch> --state all --json number,state` gives open,
   merged, closed, or none. If any is open, it's open; otherwise the newest decides.
@@ -57,24 +68,69 @@ Done when every temper item has its details.
 
 ## 3. Ask
 
-Show one table: a number for each temper item, its worktree (or `—`), its branch,
-and its details, marking the ones that hold work. Below it, list the other
-worktrees without numbers. Then ask the user which numbers to delete, or none.
-Delete nothing they didn't name by number. If the answer isn't numbers or
-"none", ask again.
+**Full run.** Show one table: a number for each temper item, its worktree (or
+`—`), its branch, and its details, marking the ones that hold work. Below it,
+list the other worktrees without numbers. Then ask the user which numbers to
+delete, or none. Delete nothing they didn't name by number. If the answer isn't
+numbers or "none", ask again.
 
-Done when the user has answered.
+**Current-worktree run.** Show the item's worktree, branch and details. If it
+holds work, don't ask: refuse it as step 4 describes, and stop. Otherwise say
+what will be deleted: name the worktree's path and the branch (gitignored files
+in the worktree, such as `.env` copies, go too; nothing on the remote is
+touched). Then ask yes or no. Anything other than a clear yes deletes nothing:
+say so and stop.
+
+Done when the user has answered, or the item was refused.
 
 ## 4. Delete
 
-For each number named, once each, in order:
+An item that holds work is never deleted. Say why, then print the commands that
+remove it by hand, filled in and single-quoted. Print them; never run them.
 
-- If it holds work, don't delete it; say why.
-- Otherwise run `git worktree remove <path>` if it has a worktree (never
-  `--force`), then `git branch -D <branch>`. If a step fails, report git's message
-  and skip the rest of that item.
+```
+git -C '<main checkout>' worktree remove --force '<worktree path>'
+git -C '<main checkout>' branch -D '<branch>'
+```
+
+Leave out the first line when the item has no worktree. For a locked worktree,
+put `git -C '<main checkout>' worktree unlock '<worktree path>'` first. When the
+branch is checked out elsewhere, print no commands: say which checkout has to
+leave the branch first. In a current-worktree run, also tell the user that if
+they run these commands, they should run them from a session in the main
+checkout, because the commands delete the folder this session is in.
+
+**Full run.** For each number named, once each, in order: refuse it if it holds
+work. Otherwise run `git worktree remove '<path>'` if it has a worktree (never
+`--force`), then `git branch -D '<branch>'`. If a step fails, report git's
+message and skip the rest of that item.
+
+**Current-worktree run.** The session is standing in the folder it's deleting,
+so leave first if it can:
+
+1. Call `ExitWorktree` with the action `keep`. It may need looking up first (it
+   can be a deferred tool), so don't judge it missing without looking. The
+   user's yes to the delete is the request to leave the worktree. If it moves
+   the session to the main checkout, run
+   `git -C '<main checkout>' worktree remove '<path>'` (never `--force`), then
+   `git -C '<main checkout>' branch -D '<branch>'`.
+2. If it reports no worktree session, fails in any other way, or the tool isn't
+   available, the session can't leave. Run both deletes as one command (never
+   `--force`):
+   `git -C '<main checkout>' worktree remove '<path>' && git -C '<main checkout>' branch -D '<branch>'`.
+   Once the worktree is removed the session's folder is gone and a new command
+   may not start, so this is the last command of the run: run nothing after it.
+   If the shell refuses the joined command before it runs, run the two halves
+   as separate commands, in the same order.
+
+Either way, if a step fails, report git's message and skip the rest.
 
 Report what was deleted, what was refused and why, and any number that didn't
-match an item.
+match an item. When the session couldn't leave and its worktree was deleted but
+its branch wasn't, print `git -C '<main checkout>' branch -D '<branch>'` for the
+user to run. When the session couldn't leave and its worktree was deleted, end
+with this line and nothing after it:
+
+> This session's folder is gone. Close it with `/exit`, then start a new one in `<main checkout>`.
 
 Done when the report is in front of the user.
