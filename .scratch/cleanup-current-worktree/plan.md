@@ -392,8 +392,7 @@ Create it in your scratchpad directory (not in this repo) as `fixture.sh`. Throw
 
 ```bash
 #!/bin/bash
-# Builds a throwaway project with a local bare "origin" and a fake gh.
-# Usage: fixture.sh <root>   — creates <root>/origin.git, <root>/my project, <root>/bin/gh
+# Usage: fixture.sh <root>
 set -eu
 root="$1"
 mkdir -p "$root/bin"
@@ -434,7 +433,6 @@ git -C .claude/worktrees/openpr push -q -u origin refactor/openpr
 # other: not a temper branch
 git worktree add -q -b spike .claude/worktrees/other
 
-# detached: no branch
 git worktree add -q --detach .claude/worktrees/detached
 
 # fake gh: answers `gh pr list --head <branch> ...`; GH_FAIL=1 makes it error
