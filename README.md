@@ -254,7 +254,7 @@ shown without a number, and `main` is never touched. You name the numbers to
 delete, or none.
 
 From inside a worktree, the same command deals with that worktree alone. It
-shows the same details, says what it will delete, and asks yes or no. If the
+shows the same details, says what it will delete, and asks yes or no. If this
 session created the worktree, it steps back to the main checkout first and
 carries on there. If it didn't, the worktree is deleted from under it, and it
 tells you to close the session and start a new one in the main checkout.
@@ -523,7 +523,7 @@ flowchart TD
     sort["Details for each<br/>PR, in main, pushed, uncommitted changes"]:::temper
     ask(["You name the numbers to delete<br/>or none"]):::you
     remove["Delete the named ones, local only"]:::temper
-    one["Details for this worktree only<br/>stops if it isn't temper's"]:::temper
+    one["Same fetch, then details for this worktree only<br/>stops if it isn't temper's"]:::temper
     yes(["You approve the delete<br/>yes or no"]):::you
     leave["Step back to the main checkout if the session can<br/>then delete, local only"]:::temper
     refuse["Anything that holds work is refused<br/>with the commands to remove it by hand"]:::temper
