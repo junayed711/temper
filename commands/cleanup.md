@@ -28,8 +28,8 @@ A **temper item** is one of those branches, with its worktree if one under
 branch, detached worktrees, other branches, worktrees outside
 `.claude/worktrees/`) is shown for information and can't be picked. So is any
 branch whose name, or worktree path relative to the main checkout, has a
-character outside `A-Za-z0-9._/-`: it isn't a temper item, run no command with its name in it, and
-say it's for the user to remove by hand.
+character outside `A-Za-z0-9._/-`: it isn't a temper item, run no command with
+its name in it, and say it's for the user to remove by hand.
 
 In a current-worktree run the only item is the one whose worktree is
 `git rev-parse --show-toplevel`. If that worktree isn't a temper item, say it's
@@ -106,15 +106,17 @@ so leave first if it can:
    main checkout, run `git worktree remove <path>` (never `--force`), then
    `git branch -D <branch>`, there.
 2. If it reports no worktree session, or the tool isn't there, the session
-   can't leave. Run `git -C <main checkout> worktree remove <path>` (never
-   `--force`), then `git -C <main checkout> branch -D <branch>`. These are the
-   last commands of the run: the session's folder is gone, so run nothing after
-   them.
+   can't leave. Run both deletes as one command (never `--force`):
+   `git -C <main checkout> worktree remove <path> && git -C <main checkout> branch -D <branch>`.
+   Once the worktree is removed the session's folder is gone and a new command
+   may not start, so this is the last command of the run: run nothing after it.
 
 Either way, if a step fails, report git's message and skip the rest.
 
 Report what was deleted, what was refused and why, and any number that didn't
-match an item. When the session couldn't leave and its worktree was deleted, end
+match an item. When the session couldn't leave and its worktree was deleted but
+its branch wasn't, print `git -C '<main checkout>' branch -D '<branch>'` for the
+user to run. When the session couldn't leave and its worktree was deleted, end
 with this line and nothing after it:
 
 > This session's folder is gone. Close it with `/exit`, then start a new one in `<main checkout>`.
