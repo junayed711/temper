@@ -42,7 +42,8 @@ current-worktree run.
 
 ## 2. Details
 
-For each temper item, find out:
+Run these checks for each temper item. In a current-worktree run, run them for
+that one item only. Find out:
 
 - **PR**: `gh pr list --head <branch> --state all --json number,state` gives open,
   merged, closed, or none. If any is open, it's open; otherwise the newest decides.
@@ -75,10 +76,10 @@ numbers or "none", ask again.
 
 **Current-worktree run.** Show the item's worktree, branch and details. If it
 holds work, don't ask: refuse it as step 4 describes, and stop. Otherwise say
-what will be deleted — the worktree folder (gitignored files in it, such as
-`.env` copies, go too) and the local branch, nothing on the remote — and ask yes
-or no. Anything other than a clear yes deletes nothing: say
-so and stop.
+what will be deleted: name the worktree's path and the branch (gitignored files
+in the worktree, such as `.env` copies, go too; nothing on the remote is
+touched). Then ask yes or no. Anything other than a clear yes deletes nothing:
+say so and stop.
 
 Done when the user has answered, or the item was refused.
 
@@ -95,9 +96,9 @@ git -C '<main checkout>' branch -D '<branch>'
 Leave out the first line when the item has no worktree. For a locked worktree,
 put `git -C '<main checkout>' worktree unlock '<worktree path>'` first. When the
 branch is checked out elsewhere, print no commands: say which checkout has to
-leave the branch first. In a current-worktree run, also tell the user to run
-these from a session in the main checkout, because this session's folder goes
-with the worktree.
+leave the branch first. In a current-worktree run, also tell the user that if
+they run these commands, they should run them from a session in the main
+checkout, because the commands delete the folder this session is in.
 
 **Full run.** For each number named, once each, in order: refuse it if it holds
 work. Otherwise run `git worktree remove '<path>'` if it has a worktree (never
