@@ -156,8 +156,9 @@ those change; it shows what it would change rather than overwriting.
 
 **Start every command from the repo's main checkout, on `main`, with a clean
 tree** — except `/temper:review`, which runs inside the worktree it's reviewing,
-and `/temper:cleanup`, which runs from the main checkout on any branch.
-temper creates the worktree and the branch itself.
+and `/temper:cleanup`, which runs from the main checkout on any branch or from
+inside the worktree you want gone. temper creates the worktree and the branch
+itself.
 
 ### Build something new
 
@@ -239,7 +240,7 @@ commits, no PR.
 
 ### Clean up after runs
 
-From the main checkout:
+From the main checkout, to see everything:
 
 ```
 /temper:cleanup
@@ -250,7 +251,16 @@ or `worktree-` branch gets a number and its details: whether its PR is open,
 merged or closed, whether it's already in `main`, whether anything exists only
 locally, and whether its worktree has uncommitted changes. Other worktrees are
 shown without a number, and `main` is never touched. You name the numbers to
-delete, or none. It refuses any you name that still hold work, and says why.
+delete, or none.
+
+From inside a worktree, the same command deals with that worktree alone. It
+shows the same details, says what it will delete, and asks yes or no. If the
+session created the worktree, it steps back to the main checkout first and
+carries on there. If it didn't, the worktree is deleted from under it, and it
+tells you to close the session and start a new one in the main checkout.
+
+Either way it refuses anything that still holds work, says why, and prints the
+commands to remove it by hand. It never runs those itself.
 
 It works locally only: remote branches are never deleted or changed, and the
 fetch never prunes. Deleting a worktree also deletes the gitignored files in it,
@@ -280,7 +290,7 @@ report says what stopped it and where it got to.
 ### After the pull request
 
 temper never merges. The worktree stays for PR feedback; once the work lands,
-`/temper:cleanup` removes it and its branch.
+run `/temper:cleanup` from inside it to remove it and its branch.
 
 ## Uninstall
 
@@ -314,9 +324,10 @@ Uninstalling leaves every repo's own files as they were. In each one:
 - **`.claude/temper.md`** — delete it, then commit.
 - **An overhaul that didn't finish** — its plan is still committed in
   `.scratch/<effort>/`. Delete the folder, then commit.
-- **Worktrees and branches runs left behind** — run `/temper:cleanup` before
-  uninstalling. It shows each one's PR and merge state, deletes the ones you name,
-  and refuses any that still hold work, so you can save what you want first.
+- **Worktrees and branches runs left behind** — run `/temper:cleanup` from the
+  main checkout before uninstalling. It shows each one's PR and merge state,
+  deletes the ones you name, and refuses any that still hold work, so you can
+  save what you want first.
 - **`.superpowers/`** — a build that stopped partway through can leave its
   workspace here. It's gitignored, so delete the folder.
 
@@ -506,15 +517,23 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    here["Main checkout<br/>stops if inside a worktree"]:::temper
+    here{"Where is the session?"}:::temper
     fetch["git fetch --no-prune origin<br/>PR checks if gh works"]:::temper
     find["List every worktree<br/>number temper's: feat/ fix/ refactor/ worktree-"]:::temper
     sort["Details for each<br/>PR, in main, pushed, uncommitted changes"]:::temper
     ask(["You name the numbers to delete<br/>or none"]):::you
-    remove["Delete the named ones, local only<br/>refuses any that hold work"]:::temper
-    report["Report what went and what was refused"]:::temper
+    remove["Delete the named ones, local only"]:::temper
+    one["Details for this worktree only<br/>stops if it isn't temper's"]:::temper
+    yes(["You approve the delete<br/>yes or no"]):::you
+    leave["Step back to the main checkout if the session can<br/>then delete, local only"]:::temper
+    refuse["Anything that holds work is refused<br/>with the commands to remove it by hand"]:::temper
+    report["Report what went and what was refused<br/>and whether to close the session"]:::temper
 
-    here --> fetch --> find --> sort --> ask --> remove --> report
+    here -- main checkout --> fetch --> find --> sort --> ask --> remove --> report
+    here -- inside a worktree --> one --> yes --> leave --> report
+    remove -.-> refuse
+    one -.-> refuse
+    refuse --> report
 
     classDef you fill:#E1F5EE,stroke:#0F6E56,color:#04342C
     classDef temper fill:#F1EFE8,stroke:#5F5E5A,color:#2C2C2A
