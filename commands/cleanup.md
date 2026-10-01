@@ -13,7 +13,9 @@ Single-quote every branch and path you put in a command.
 ## 1. Look
 
 Run `git rev-parse --path-format=absolute --git-dir --git-common-dir`. The
-**main checkout** is the folder that holds the second path. If the two paths
+**main checkout** is the folder that holds the second path. If its path contains
+a single quote, stop: say cleanup can't quote that path safely and the worktrees
+are for the user to remove by hand, and run nothing further. If the two paths
 match, the session is in the main checkout and this is a **full run**: it shows
 every worktree and deletes the ones the user names. If they differ, the session
 is inside a worktree and this is a **current-worktree run**: it deals with that
@@ -73,8 +75,9 @@ numbers or "none", ask again.
 
 **Current-worktree run.** Show the item's worktree, branch and details. If it
 holds work, don't ask: refuse it as step 4 describes, and stop. Otherwise say
-what will be deleted — the worktree folder and the local branch, nothing on the
-remote — and ask yes or no. Anything other than a clear yes deletes nothing: say
+what will be deleted — the worktree folder (gitignored files in it, such as
+`.env` copies, go too) and the local branch, nothing on the remote — and ask yes
+or no. Anything other than a clear yes deletes nothing: say
 so and stop.
 
 Done when the user has answered, or the item was refused.
@@ -92,24 +95,32 @@ git -C '<main checkout>' branch -D '<branch>'
 Leave out the first line when the item has no worktree. For a locked worktree,
 put `git -C '<main checkout>' worktree unlock '<worktree path>'` first. When the
 branch is checked out elsewhere, print no commands: say which checkout has to
-leave the branch first.
+leave the branch first. In a current-worktree run, also tell the user to run
+these from a session in the main checkout, because this session's folder goes
+with the worktree.
 
 **Full run.** For each number named, once each, in order: refuse it if it holds
-work. Otherwise run `git worktree remove <path>` if it has a worktree (never
-`--force`), then `git branch -D <branch>`. If a step fails, report git's message
-and skip the rest of that item.
+work. Otherwise run `git worktree remove '<path>'` if it has a worktree (never
+`--force`), then `git branch -D '<branch>'`. If a step fails, report git's
+message and skip the rest of that item.
 
 **Current-worktree run.** The session is standing in the folder it's deleting,
 so leave first if it can:
 
-1. Call `ExitWorktree` with the action `keep`. If it moves the session to the
-   main checkout, run `git worktree remove <path>` (never `--force`), then
-   `git branch -D <branch>`, there.
-2. If it reports no worktree session, or the tool isn't there, the session
-   can't leave. Run both deletes as one command (never `--force`):
-   `git -C <main checkout> worktree remove <path> && git -C <main checkout> branch -D <branch>`.
+1. Call `ExitWorktree` with the action `keep`. It may need looking up first (it
+   can be a deferred tool), so don't judge it missing without looking. The
+   user's yes to the delete is the request to leave the worktree. If it moves
+   the session to the main checkout, run
+   `git -C '<main checkout>' worktree remove '<path>'` (never `--force`), then
+   `git -C '<main checkout>' branch -D '<branch>'`.
+2. If it reports no worktree session, fails in any other way, or the tool isn't
+   available, the session can't leave. Run both deletes as one command (never
+   `--force`):
+   `git -C '<main checkout>' worktree remove '<path>' && git -C '<main checkout>' branch -D '<branch>'`.
    Once the worktree is removed the session's folder is gone and a new command
    may not start, so this is the last command of the run: run nothing after it.
+   If the shell refuses the joined command before it runs, run the two halves
+   as separate commands, in the same order.
 
 Either way, if a step fails, report git's message and skip the rest.
 
