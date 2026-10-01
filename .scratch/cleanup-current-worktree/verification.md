@@ -20,6 +20,9 @@ What this does and doesn't show:
   and 5 are from the first walk, which ran the detail checks for the item in
   hand but did not record the output of step 1's two listing commands.
 
+- The final-review wording changes to the command were made after the walks and
+  were not re-walked.
+
 git version: git version 2.50.1 (Apple Git-155)
 
 | # | Scenario | Result | Observed |
@@ -42,11 +45,25 @@ git version: git version 2.50.1 (Apple Git-155)
   checkout".
 - **Step 4, when the session can't leave.** The worktree removal and the branch
   delete were two commands. In the first walk of scenarios 1 and 2 the helper
-  could not start the second one: its folder had just been deleted. A shell
-  started from the deleted folder in the re-walk also printed
-  `shell-init: error retrieving current directory`. They are now one `&&`
-  command, and the report gives the branch delete to run by hand if the worktree
-  went but the branch didn't.
+  script could not run the second one, because the helper itself begins by
+  `cd`-ing into the folder, which had just been deleted. That was the helper's
+  limit, not the shell's. A new shell does start in a deleted folder: it prints
+  a `shell-init: error retrieving current directory` warning and carries on, and
+  `git -C '<main checkout>' branch -D` works from there. How a real Claude Code
+  session's shell behaves in a deleted folder was not observed, so the two
+  deletes were joined into one `&&` command as a precaution, with running them
+  separately as the fallback. The report gives the branch delete to run by hand
+  if the worktree went but the branch didn't.
+- **Final review changes.** Made after the walks, and not re-walked.
+  - The step-back case now uses `git -C '<main checkout>'` too, and every
+    command the agent runs has its placeholders single-quoted.
+  - A single quote in the main checkout path stops the run.
+  - A current-worktree refusal says to run the manual commands from a session in
+    the main checkout.
+  - The question mentions that gitignored files in the folder go with it.
+  - `ExitWorktree` is looked up before it's judged missing, any failure of it
+    counts as "can't leave", and the joined command falls back to two commands
+    if the shell refuses it.
 
 ## Observation
 
@@ -56,6 +73,9 @@ item hold work. With a working `gh` and a failed fetch, those two details could
 be out of date. The command says to report the failed fetch and carry on, which
 is how it behaved before this change, so it was left as it is.
 
+Prunable ("folder missing") worktrees were checked in the final review in a
+throwaway repo: `git worktree remove` then `git branch -D` both work on one.
+
 ## Not verified
 
 - A live `/temper:cleanup` run, and so the exact words the command prints.
@@ -63,5 +83,11 @@ is how it behaved before this change, so it was left as it is.
 - How a real Claude Code session behaves after its folder is deleted.
 - The `gh repo view` default-branch lookup.
 - The branch-delete-failed path of the single command.
-- Locked, prunable ("folder missing") and checked-out-elsewhere worktrees, and
-  branch or path names with characters outside `A-Za-z0-9._/-`.
+- `gh` missing (as opposed to erroring).
+- A failed fetch with a working `gh`.
+- The manual commands for an item with no worktree, and the unlock variant.
+- A single quote in the main checkout path.
+- The joined command being refused by the shell.
+- `ExitWorktree` failing in some other way.
+- Locked and checked-out-elsewhere worktrees, and branch or path names with
+  characters outside `A-Za-z0-9._/-`.
