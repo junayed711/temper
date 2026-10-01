@@ -27,8 +27,8 @@ A **temper item** is one of those branches, with its worktree if one under
 `.claude/worktrees/` is on it. Everything else (the main checkout, the default
 branch, detached worktrees, other branches, worktrees outside
 `.claude/worktrees/`) is shown for information and can't be picked. So is any
-branch whose name, or path inside the repo, has a character outside
-`A-Za-z0-9._/-`: it isn't a temper item, run no command with its name in it, and
+branch whose name, or worktree path relative to the main checkout, has a
+character outside `A-Za-z0-9._/-`: it isn't a temper item, run no command with its name in it, and
 say it's for the user to remove by hand.
 
 In a current-worktree run the only item is the one whose worktree is
