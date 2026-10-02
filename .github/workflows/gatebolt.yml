@@ -3,6 +3,9 @@ on: [push]
 jobs:
   provenance:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -10,3 +13,4 @@ jobs:
       - run: npx @gatebolt/cli ci
         env:
           GATEBOLT_KEY: ${{ secrets.GATEBOLT_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
