@@ -62,16 +62,17 @@ that one item only. Find out:
 `EnterWorktree` locks the worktree it creates for the session that called it,
 with a reason like `claude session <name> (pid <n> start <date>)`. A lock is
 **this session's own** only in a current-worktree run, and only when the reason
-on the `locked` line starts with `claude session` and its pid equals
-`echo "$CLAUDE_PID"`. A reason of any other shape, or an empty `$CLAUDE_PID`,
-is someone else's lock: "locked". For an own lock, run the status check as for
-an unlocked worktree and put "locked by this session" in front of its result.
+on the `locked` line starts with `claude session` and the number in its closing
+`(pid <n> start <date>)` equals `$CLAUDE_PID`. A reason of any other shape, or
+an empty `$CLAUDE_PID`, is someone else's lock: "locked". When the lock is this
+session's own, run the status check as for an unlocked worktree and put
+"locked by this session" in front of its result.
 
 A check that errors, or exits other than as described, reads "couldn't check".
 
 An item **holds work** when it has an open PR, commits only here, uncommitted
-changes, a worktree locked by anything but this session, is checked out
-elsewhere, or has anything that couldn't be checked.
+changes, a locked worktree (unless the lock is this session's own), is checked
+out elsewhere, or has anything that couldn't be checked.
 
 Done when every temper item has its details.
 
@@ -103,7 +104,8 @@ git -C '<main checkout>' branch -D '<branch>'
 ```
 
 Leave out the first line when the item has no worktree. For a locked worktree,
-put `git -C '<main checkout>' worktree unlock '<worktree path>'` first. When the
+whether the lock is this session's own or not, put
+`git -C '<main checkout>' worktree unlock '<worktree path>'` first. When the
 branch is checked out elsewhere, print no commands: say which checkout has to
 leave the branch first. In a current-worktree run, also tell the user that if
 they run these commands, they should run them from a session in the main
@@ -128,8 +130,9 @@ so leave first if it can:
    available, the session can't leave. Run both deletes as one command (never
    `--force`):
    `git -C '<main checkout>' worktree remove '<path>' && git -C '<main checkout>' branch -D '<branch>'`.
-   When the worktree is locked by this session, the lock is still there and
-   the remove would refuse it, so unlock it first in the same command:
+   When the lock was this session's own and `git worktree list --porcelain`
+   still shows the worktree's `locked` line, the remove would refuse it, so
+   unlock it first in the same command:
    `git -C '<main checkout>' worktree unlock '<path>' && git -C '<main checkout>' worktree remove '<path>' && git -C '<main checkout>' branch -D '<branch>'`.
    Never unlock any other lock. Once the worktree is removed the session's
    folder is gone and a new command may not start, so this is the last command
