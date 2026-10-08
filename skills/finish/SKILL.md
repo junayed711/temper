@@ -34,16 +34,15 @@ request, follow them. Otherwise, write it for someone who doesn't work on the co
 the summary first, then the record.
 
 ```markdown
-One sentence in plain words: what changes, and why it matters.
+One short sentence in plain words: what changes, and why it matters.
 
 **What changes**
 
-- Three to five short bullets, from the commits, in plain words.
+- At most four bullets, one line each, from the commits, in plain words.
 
 **Heads up**
 
-- A security pass that didn't run on a risky path, first.
-- Every ruling that costs something if it was wrong, in a line each.
+- At most three bullets, one line each.
 
 <details><summary>Details</summary>
 
@@ -53,15 +52,25 @@ One sentence in plain words: what changes, and why it matters.
 
 **Root cause** for a bug, or **baseline** proof for a refactor.
 
-**How it was checked**: gates, each seat's outcome, verify.
+**How it was checked**: gates, each seat's outcome, verify, and what wasn't checked.
 
 **Not blocking**: each finding with its seat and rating.
 
 </details>
 ```
 
-Skip Heads up when there's nothing for it. The title is short, plain and names the
-change. Write the file outside the repo: `mktemp`.
+The part above Details is all most readers see, so it has to show what the change
+is at a glance. The caps are hard: when there's more to say, pick what matters most
+and put the rest in Details.
+
+Heads up is only for what the reviewer has to act on or could be caught out by
+after merging. A security pass that didn't run on a risky path comes first. Then
+the rulings that went against what was asked, or that cost the most if wrong.
+Checks that weren't run, things left as they are, and how the branch got here all
+belong in Details. Skip Heads up when there's nothing for it.
+
+The title is short, plain and names the change. Write the file outside the repo:
+`mktemp`.
 
 Done when the file holds every part that applies.
 
