@@ -54,15 +54,25 @@ that one item only. Find out:
 - **pushed**: `git rev-list --count <branch> --not --remotes=origin` gives 0 for
   "all pushed", otherwise "N commits only here".
 - **worktree**: none; "folder missing" if the porcelain record says `prunable`;
-  "locked"; otherwise `git -C <path> status --porcelain --untracked-files=all`
-  gives "no changes" or "uncommitted changes". If the branch is checked out
-  anywhere else, including the main checkout, "checked out at <path>".
+  "locked" if it has a `locked` line, unless the lock is this session's own;
+  otherwise `git -C <path> status --porcelain --untracked-files=all` gives
+  "no changes" or "uncommitted changes". If the branch is checked out anywhere
+  else, including the main checkout, "checked out at <path>".
+
+`EnterWorktree` locks the worktree it creates for the session that called it,
+with a reason like `claude session <name> (pid <n> start <date>)`. A lock is
+**this session's own** only in a current-worktree run, and only when the reason
+on the `locked` line starts with `claude session` and the number in its closing
+`(pid <n> start <date>)` equals `$CLAUDE_PID`. A reason of any other shape, or
+an empty `$CLAUDE_PID`, is someone else's lock: "locked". When the lock is this
+session's own, run the status check as for an unlocked worktree and put
+"locked by this session" in front of its result.
 
 A check that errors, or exits other than as described, reads "couldn't check".
 
 An item **holds work** when it has an open PR, commits only here, uncommitted
-changes, a locked worktree, is checked out elsewhere, or has anything that
-couldn't be checked.
+changes, a locked worktree (unless the lock is this session's own), is checked
+out elsewhere, or has anything that couldn't be checked.
 
 Done when every temper item has its details.
 
@@ -94,7 +104,8 @@ git -C '<main checkout>' branch -D '<branch>'
 ```
 
 Leave out the first line when the item has no worktree. For a locked worktree,
-put `git -C '<main checkout>' worktree unlock '<worktree path>'` first. When the
+whether the lock is this session's own or not, put
+`git -C '<main checkout>' worktree unlock '<worktree path>'` first. When the
 branch is checked out elsewhere, print no commands: say which checkout has to
 leave the branch first. In a current-worktree run, also tell the user that if
 they run these commands, they should run them from a session in the main
@@ -110,18 +121,23 @@ so leave first if it can:
 
 1. Call `ExitWorktree` with the action `keep`. It may need looking up first (it
    can be a deferred tool), so don't judge it missing without looking. The
-   user's yes to the delete is the request to leave the worktree. If it moves
-   the session to the main checkout, run
+   user's yes to the delete is the request to leave the worktree. Leaving
+   releases the session's own lock. If it moves the session to the main
+   checkout, run
    `git -C '<main checkout>' worktree remove '<path>'` (never `--force`), then
    `git -C '<main checkout>' branch -D '<branch>'`.
 2. If it reports no worktree session, fails in any other way, or the tool isn't
    available, the session can't leave. Run both deletes as one command (never
    `--force`):
    `git -C '<main checkout>' worktree remove '<path>' && git -C '<main checkout>' branch -D '<branch>'`.
-   Once the worktree is removed the session's folder is gone and a new command
-   may not start, so this is the last command of the run: run nothing after it.
-   If the shell refuses the joined command before it runs, run the two halves
-   as separate commands, in the same order.
+   When the lock was this session's own and `git worktree list --porcelain`
+   still shows the worktree's `locked` line, the remove would refuse it, so
+   unlock it first in the same command:
+   `git -C '<main checkout>' worktree unlock '<path>' && git -C '<main checkout>' worktree remove '<path>' && git -C '<main checkout>' branch -D '<branch>'`.
+   Never unlock any other lock. Once the worktree is removed the session's
+   folder is gone and a new command may not start, so this is the last command
+   of the run: run nothing after it. If the shell refuses the joined command
+   before it runs, run its parts as separate commands, in the same order.
 
 Either way, if a step fails, report git's message and skip the rest.
 
