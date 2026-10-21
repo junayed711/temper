@@ -71,9 +71,8 @@ Find the spec at `.scratch/<slug>/spec.md`. If `/to-spec` wrote it into another
 folder under `.scratch/`, move it there. If there's no spec, tell the user to run
 `/to-spec` and stop.
 
-Load `temper:skill-routing` and follow `Installed`. If a declared skill is missing,
-name it and its fix (install it, or edit the Skills line), and stop — no plan has
-been written and no code changed.
+Load `temper:skill-routing` and follow `Installed`. If a declared skill is
+missing, name it and its fix, and carry on to the plan: B4 settles it.
 
 If the tree has uncommitted changes that aren't the spec or research notes, a
 previous build stopped partway through. Ask whether to keep them — committed,
@@ -82,7 +81,10 @@ following the Commits field — or discard them.
 Commit the spec and research notes following the Commits field of the repo's
 `.claude/temper.md`.
 
-If `.scratch/<slug>/plan.md` already exists, this is a resumed build: go to B4.
+If `.scratch/<slug>/plan.md` already exists, this is a resumed build. If the plan
+has no `### Skills` heading, or its "Handing back to temper" section has no
+paragraph about `temper:skill-routing`, put B3's section in place of that section
+and commit the plan following the Commits field. Then go to B4.
 
 Done when the spec is committed on `feat/<slug>` and the tree is clean.
 
@@ -134,17 +136,22 @@ Show the user the plan's tasks — the `### Task N:` headings, one line each.
 
 Before asking the start-line question, load `temper:skill-routing` and follow
 `The skill list`, against the spec and the plan's tasks. Show the list below the
-tasks. If a declared skill is `missing`, say so: the user installs it or edits the
-Skills line, and the list is worked out again. This is the last point a run stops
-for a skill.
+tasks. If a declared skill is `missing`, say so, and settle it one of two ways:
+
+- the user installs it in a new session, since a running session doesn't pick up
+  new skills, and runs `/temper:feature build` again, which resumes here; or
+- it is dropped from this run's skill list, noted for the pull request.
+
+The Skills line itself is edited on the default branch through the user's usual
+process, never in this worktree. This is the last point a run stops for a skill.
 
 Then ask: *Start the build? Nothing is asked from here until the pull request.*
 Change the plan as they ask, and show the tasks again. Changes to the skill list
 go through the same loop.
 
 Once they say go, set the agreed list under the plan's `### Skills` heading
-(replacing the placeholder, or the earlier list on a resumed build), and commit the plan following the Commits field. This is a
-second commit of the plan.
+(replacing the placeholder, or the earlier list on a resumed build), and commit
+the plan following the Commits field. This is a second commit of the plan.
 
 From here on, a question you'd have asked is a decision you make: take the choice
 the spec supports best, note it for the pull request, and carry on.

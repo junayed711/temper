@@ -37,9 +37,16 @@ Done when everything that moves has a test, and both files are committed.
 ## 2. The start line
 
 Load `temper:skill-routing` and follow `The skill list` against the spec, for the
-whole run. Show the list. If a declared skill is `missing`, say so: the user
-installs it or edits the Skills line, and the list is worked out again. This is
-the last point a run stops for a skill.
+whole run. Show the list. If a declared skill is `missing`, say so, and settle it
+one of two ways:
+
+- the user installs it in a new session, since a running session doesn't pick up
+  new skills, and runs the command again: this run stops here, and says the
+  worktree is kept; or
+- it is dropped from this run's skill list, noted for the pull request.
+
+The Skills line itself is edited on the default branch through the user's usual
+process, never in this worktree. This is the last point a run stops for a skill.
 
 Then tell the user: *Start line — nothing is asked from here until the pull request.*
 

@@ -34,7 +34,9 @@ Check all five. Report every one that fails, each with its fix, then stop.
 - **Configured** — `.claude/temper.md` exists. Fix: `/temper:setup`.
 - **Declared skills installed** — load `temper:skill-routing` and follow
   `Installed`. A `.claude/temper.md` with no Skills line passes. Fix: install each
-  missing skill, or edit the Skills line.
+  missing skill and start a new session, since a running session doesn't pick up
+  new skills; or edit the Skills line on the default branch through your usual
+  process.
 
 Done when all five pass.
 
