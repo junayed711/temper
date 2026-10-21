@@ -606,8 +606,9 @@ Only when `check` comes out clean:
    summary: one sentence, up to four one-line bullets of what changes, and a
    Heads up of up to three lines for what you have to act on or could be caught
    out by. Unresolved skill findings go there too, right after a security pass
-   that didn't run on a risky path. The full record (the spec in brief, every decision Superpowers made
-   on your behalf, which skills the writers and reviewers used, how it was checked and what wasn't, findings that didn't
+   that didn't run on a risky path. The full record (the spec in brief, every
+   decision Superpowers made on your behalf, which skills the writers and
+   reviewers used, how it was checked and what wasn't, findings that didn't
    block) sits in a collapsed Details section below. Your own or the repo's pull
    request rules win over this layout.
 2. Delete `.scratch/<slug>/` and commit.
