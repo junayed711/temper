@@ -144,7 +144,7 @@ Write the verdict in this shape:
 - Gates: <command>: pass | fail, …
 - Baseline: every test still passes | <tests that stopped passing> | none
 - Standards: <outcome>
-- Skills: <skills the Standards seat used> | none
+- Skills: <skills the Standards seat chose for code-review; these count as the reviewers' skills> | none
 - Unresolved skill findings: <finding — skill, location> … | none
 - Spec: <outcome>
 - Comments: <outcome>

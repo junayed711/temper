@@ -88,7 +88,8 @@ and the rule.
 A declared skill that isn't installed is reported as not checked, in words, naming
 the skill. It never stops the review.
 
-State the skills you loaded as the first line of your report.
+State the skills you loaded, or chose for another reviewer, as the first line of
+your report.
 
 ## What to record
 
