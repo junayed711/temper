@@ -115,9 +115,11 @@ and as each fix starts, in the shape `build: task <n>/<total> — <what>`.
 When you dispatch an implementer, put in its prompt: load `temper:skill-routing`,
 follow `Writing`, with this task's line from `### Skills` below. When you dispatch
 a task reviewer, put in its prompt: load `temper:skill-routing` and follow
-`Reviewing`. Neither may stop the build over a skill. Your final list of rulings
-includes, per task, the skills the implementer loaded and skipped and the skills its
-reviewer loaded.
+`Reviewing`. Neither may stop the build over a skill. After each task review, add
+a ledger line
+`Task N: skills — writer loaded …, skipped …; reviewer loaded …`, from the
+implementer's reply and the first line of the reviewer's report. Copy those lines
+into your final message alongside the rulings.
 
 ### Skills
 
@@ -165,8 +167,8 @@ worktree already exists; it works in this one. When its final review is clean it
 hands back here, as the plan's "Handing back to temper" section says, and doesn't
 load `superpowers:finishing-a-development-branch`.
 
-Keep its final message's list of **rulings** — its ledger is deleted when it
-finishes, so that message is the only copy.
+Keep its final message's list of **rulings** and its `Task N: skills` lines — its
+ledger is deleted when it finishes, so that message is the only copy.
 
 When it stops for one of its own reasons — something irreversible,
 security-sensitive or outside this worktree, or a plan broken beyond a ruling —
@@ -190,7 +192,8 @@ Done when `check` has written its verdict.
 
 ### B7. Finish
 
-Load `temper:finish` with the kind `feat`, the verdict, and every ruling: the build
-loop's list and each decision you noted after the start line.
+Load `temper:finish` with the kind `feat`, the verdict, every ruling — the build
+loop's list and each decision you noted after the start line — and the skills
+loaded and skipped, from the build loop's `Task N: skills` lines.
 
 Done when `finish` has reported a pull request, or why there isn't one.

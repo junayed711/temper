@@ -95,7 +95,7 @@ Done when `check` has written its verdict.
 
 ## 6. Finish
 
-Load `temper:finish` with the kind `fix`, the verdict, the root cause, and every
-decision you noted after the start line.
+Load `temper:finish` with the kind `fix`, the verdict, the root cause, the skills
+loaded and skipped, and every decision you noted after the start line.
 
 Done when `finish` has reported a pull request, or why there isn't one.
