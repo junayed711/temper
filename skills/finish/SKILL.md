@@ -15,7 +15,7 @@ Turns a clean check into a pull request.
   message — the loop deletes its own ledger when it finishes, so that message is
   the only copy.
 - The **skills** the writers loaded and skipped. For a feature, from the build
-  loop's rulings; otherwise, the caller's notes.
+  loop's `Task N: skills` lines; otherwise, the caller's notes.
 - For a bug: the **root cause** found. For a refactor: the **baseline** result.
 
 The slug and the default branch are as the `start` skill defines them.
@@ -52,7 +52,9 @@ One short sentence in plain words: what changes, and why it matters.
 
 **Rulings**: every decision made, why, and what it costs if it was wrong.
 
-**Skills**: what the writers loaded, what the reviewers loaded, the gap between them, and any skipped as unavailable — as `temper:skill-routing`'s `What to record` lists.
+**Skills**: load `temper:skill-routing` and follow `What to record`, from the
+skills the caller gave you and the verdict's Skills line. Include each unresolved
+skill finding that didn't fit Heads up.
 
 **Root cause** for a bug, or **baseline** proof for a refactor.
 
@@ -69,9 +71,10 @@ and put the rest in Details.
 
 Heads up is only for what the reviewer has to act on or could be caught out by
 after merging. A security pass that didn't run on a risky path comes first. Then
-each unresolved skill finding from the verdict. Then the rulings that went against what was asked, or that cost the most if wrong.
-Checks that weren't run, things left as they are, and how the branch got here all
-belong in Details. Skip Heads up when there's nothing for it.
+each unresolved skill finding from the verdict. Then the rulings that went against
+what was asked, or that cost the most if wrong. Checks that weren't run, things
+left as they are, and how the branch got here all belong in Details. Skip Heads up
+when there's nothing for it.
 
 The title is short, plain and names the change. Write the file outside the repo:
 `mktemp`.

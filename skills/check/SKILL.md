@@ -57,11 +57,12 @@ together in a single message.
 each smell, and treat it as not blocking.
 
 Before `code-review` runs, load `temper:skill-routing` and follow `Reviewing`
-against the diff. Give `code-review` the path of each chosen skill's `SKILL.md`
-alongside the spec's path, as an extra standards source. A rule of one of those
-skills, broken, is a documented rule broken: blocking, with the skill named. A
-declared skill that isn't installed, including one uninstalled after the start
-line, is noted under "Not checked", in both modes; the check carries on.
+against the diff only to choose the skills; `code-review` judges against them.
+Give `code-review` the path of each chosen skill's `SKILL.md` alongside the spec's
+path, as an extra standards source. A rule of one of those skills, broken, is a
+documented rule broken: blocking, with the skill named. A declared skill that
+isn't installed, including one uninstalled after the start line, is noted under
+"Not checked", in both modes; the check carries on.
 
 **Security sits only when the branch earns it.** List the changed paths
 (`git diff --name-only <fixed point>...HEAD`) and match them against Risky paths.
@@ -100,7 +101,8 @@ survives two rounds, it stops blocking: record it as an **unresolved skill
 finding**, and the check carries on. A finding a documented repo standard raises,
 and every other finding, keeps the two-round rule.
 
-Done when no blocking finding remains, or a finding has survived two rounds.
+Done when no blocking finding remains, or a finding other than a skill finding
+has survived two rounds.
 
 ## 4. Verify
 
@@ -123,7 +125,8 @@ Done when the outcome is recorded.
 - verify did not fail
 
 Unresolved skill findings don't stop a verdict being clean; they're reported first
-after Security not run.
+after Security not run. They go under `Unresolved skill findings:`, not
+`Blocking:`.
 
 Security **not run** doesn't stop a verdict being clean; it is reported first. If
 the last gate run's record is no longer in front of you, run the gates again before
