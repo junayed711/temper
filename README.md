@@ -140,9 +140,9 @@ skills are installed and that `.scratch/` isn't gitignored. Then it proposes
 
 - Gates: pnpm typecheck; pnpm lint; pnpm test
 - Risky paths: packages/auth/** (the ledger skill); packages/db/drizzle/** (none)
-- Skills: packages/ui/** (frontend-design); **/*.sql (sql-style)
 - Verify: pnpm test:live
 - Commits: lowercase subject only, at most 80 characters
+- Skills: packages/ui/** (frontend-design); **/*.sql (sql-style)
 ```
 
 Commit it, so every worktree has it. temper keeps its settings in its own file, so
