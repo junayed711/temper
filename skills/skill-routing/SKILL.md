@@ -25,7 +25,9 @@ A declared skill **applies** to a file its glob matches.
 
 A skill is **installed** when it is in the session's list of available skills.
 Check every skill the field names. Return each one that is missing, with its fix:
-install it, or edit the field.
+install it and start a new session, since a running session doesn't pick up new
+skills; or edit the field on the default branch through the user's usual process,
+never in a run's worktree.
 
 This section never decides whether to stop. The caller does.
 
@@ -59,7 +61,9 @@ Write the code and its tests following them.
 A skill that turns out not to be available is skipped: carry on as you would
 without it, and note it. Never stop for a skill.
 
-Report every skill you loaded and every one you skipped.
+Report every skill you loaded and every one you skipped as one line in your short
+reply or status, `Skills: loaded <skill>, …; skipped <skill>, …`, not only in a
+report file.
 
 ## Reviewing
 
@@ -69,8 +73,10 @@ declared skill whose glob matches a changed file.
 Judge the code and its tests against each. A finding from a skill names the skill
 and the rule.
 
-A declared skill that isn't installed is reported under "Not checked". It never
-stops the review.
+A declared skill that isn't installed is reported as not checked, in words, naming
+the skill. It never stops the review.
+
+State the skills you loaded as the first line of your report.
 
 ## What to record
 
