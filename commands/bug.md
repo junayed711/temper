@@ -42,19 +42,27 @@ Done when the user has confirmed the four answers and `spec.md` is committed.
 
 ## 3. The start line
 
-Tell the user: *Start line — nothing is asked from here until the pull request.*
+Load `temper:skill-routing` and follow `The skill list` against the spec, for the
+whole run. Show the list. If a declared skill is `missing`, say so: the user
+installs it or edits the Skills line, and the list is worked out again. This is
+the last point a run stops for a skill.
+
+Then tell the user: *Start line — nothing is asked from here until the pull request.*
 
 From here on, a question you'd have asked is a decision you make: take the choice
 the spec supports best, note it for the pull request, and carry on.
 
 ## 4. Root cause, then the fix
 
+Follow `Writing` from `temper:skill-routing` with the agreed list, for the failing
+test and the fix.
+
 Load `superpowers:systematic-debugging`, with `.scratch/<slug>/spec.md` as the
 bug report it works from. It ends in one of three places:
 
 - **Fixed** — a failing test first, then the fix, verified. Commit anything left
   uncommitted, following the Commits field. Keep the root cause, in two or three
-  lines, for the pull request.
+  lines, for the pull request, with the skills loaded and skipped.
 - **Three fixes failed** — at the point where the skill says to discuss the
   architecture with your human partner, this run stops instead. Report the root
   cause as far as it got, each attempt and why it failed, and what's committed.
