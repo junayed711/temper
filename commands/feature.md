@@ -71,6 +71,10 @@ Find the spec at `.scratch/<slug>/spec.md`. If `/to-spec` wrote it into another
 folder under `.scratch/`, move it there. If there's no spec, tell the user to run
 `/to-spec` and stop.
 
+Load `temper:skill-routing` and follow `Installed`. If a declared skill is missing,
+name it and its fix (install it, or edit the Skills line), and stop — no plan has
+been written and no code changed.
+
 If the tree has uncommitted changes that aren't the spec or research notes, a
 previous build stopped partway through. Ask whether to keep them — committed,
 following the Commits field — or discard them.
@@ -105,6 +109,17 @@ finish takes the place of `superpowers:finishing-a-development-branch` here.
 
 While it runs, post a progress line as each task starts, as its review comes back,
 and as each fix starts, in the shape `build: task <n>/<total> — <what>`.
+
+Every implementer dispatch tells the implementer to load `temper:skill-routing` and
+follow `Writing`, with its task's line from the skill list below. Every
+task-reviewer dispatch tells the reviewer to load `temper:skill-routing` and follow
+`Reviewing`. Neither may stop the build over a skill. Your final list of rulings
+includes, per task, the skills the implementer loaded and skipped and the skills its
+reviewer loaded.
+
+### Skills
+
+(The agreed skill list goes here at the start line.)
 ```
 
 When a long session compacts, instructions in the conversation get summarised,
@@ -115,14 +130,26 @@ Done when the section is in `plan.md` and the plan is committed.
 
 ### B4. The start line
 
-Show the user the plan's tasks — the `### Task N:` headings, one line each — and
-ask: *Start the build? Nothing is asked from here until the pull request.* Change
-the plan as they ask, and show the tasks again.
+Show the user the plan's tasks — the `### Task N:` headings, one line each.
+
+Before asking the start-line question, load `temper:skill-routing` and follow
+`The skill list`, against the spec and the plan's tasks. Show the list below the
+tasks. If a declared skill is `missing`, say so: the user installs it or edits the
+Skills line, and the list is worked out again. This is the last point a run stops
+for a skill.
+
+Then ask: *Start the build? Nothing is asked from here until the pull request.*
+Change the plan as they ask, and show the tasks again. Changes to the skill list
+go through the same loop.
+
+Once they say go, replace the placeholder under the plan's `### Skills` heading
+with the agreed list, and commit the plan following the Commits field. This is a
+second commit of the plan.
 
 From here on, a question you'd have asked is a decision you make: take the choice
 the spec supports best, note it for the pull request, and carry on.
 
-Done when the user says go.
+Done when the user says go and the plan with the agreed skill list is committed.
 
 ### B5. Build
 
