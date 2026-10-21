@@ -38,10 +38,16 @@ the whole run outside a feature, list:
 - the installed skills that fit its language, packages, context and kind of
   change, picked from the spec and the task.
 
-Show one line per task:
+For a feature, show one line per task:
 
 ```
 Task N: <skill>, <skill> (declared: <skill>)
+```
+
+Outside a feature, show one line for the whole run:
+
+```
+Run: <skill>, <skill> (declared: <skill>)
 ```
 
 Mark any declared skill that isn't installed as `missing`.
