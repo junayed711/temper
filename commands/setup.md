@@ -78,6 +78,9 @@ Work out each field from the repo itself:
   works end to end, beyond its tests.
 - **Commits** — the repo's documented commit message rules, or the convention
   `git log` shows consistently.
+- **Skills** — the languages and file types the repo uses, matched against the
+  skills installed in this session. List only skills that are installed, each with
+  the glob it applies to, or `none` when nothing fits.
 
 Propose the whole file in exactly this shape, and for each value say where it came
 from, so the user can accept it in a word:
@@ -89,6 +92,7 @@ from, so the user can accept it in a word:
 - Risky paths: <glob> (<skill or doc>); <glob> (none)
 - Verify: <command or skill>
 - Commits: <rules>
+- Skills: <glob> (<skill>); <glob> (<skill>)
 ```
 
 Every field carries a value: a field with nothing to put in it says `none`.
