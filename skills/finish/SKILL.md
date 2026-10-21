@@ -14,8 +14,9 @@ Turns a clean check into a pull request.
   For a feature, that includes the list from Superpowers' build loop's final
   message — the loop deletes its own ledger when it finishes, so that message is
   the only copy.
-- The **skills** the writers loaded and skipped. For a feature, from the build
-  loop's `Task N: skills` lines; otherwise, the caller's notes.
+- The **skills**: the writers' skills loaded and skipped, and for a feature the
+  per-task reviewers' skills loaded. For a feature, both from the build loop's
+  `Task N: skills` lines; otherwise, the writers' from the caller's notes.
 - For a bug: the **root cause** found. For a refactor: the **baseline** result.
 
 The slug and the default branch are as the `start` skill defines them.
@@ -52,8 +53,10 @@ One short sentence in plain words: what changes, and why it matters.
 
 **Rulings**: every decision made, why, and what it costs if it was wrong.
 
-**Skills**: load `temper:skill-routing` and follow `What to record`, from the
-skills the caller gave you and the verdict's Skills line. Include each unresolved
+**Skills**: load `temper:skill-routing` and follow `What to record`. The writers'
+skills are the ones the caller gave you for writers. The reviewers' skills are the
+per-task reviewers' the caller gave you, plus the verdict's Skills line. The gap is
+the reviewers' skills that aren't among the writers'. Include each unresolved
 skill finding that didn't fit Heads up.
 
 **Root cause** for a bug, or **baseline** proof for a refactor.

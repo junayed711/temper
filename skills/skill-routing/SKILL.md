@@ -95,7 +95,7 @@ State the skills you loaded as the first line of your report.
 For the pull request, record:
 
 - the skills writers loaded,
-- the skills reviewers loaded,
-- the ones reviewers loaded that writers didn't (the gap),
+- the skills reviewers loaded or chose,
+- the ones reviewers loaded or chose that writers didn't load (the gap),
 - skills skipped as unavailable, and
 - unresolved skill findings.
