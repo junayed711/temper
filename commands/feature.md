@@ -147,7 +147,17 @@ Change the plan as they ask, and show the tasks again. Changes to the skill list
 go through the same loop.
 
 Once they say go, set the agreed list under the plan's `### Skills` heading
-(replacing the placeholder, or the earlier list on a resumed build), and commit
+(replacing the placeholder, or the earlier list on a resumed build). Then write
+each task's skills into the task itself, as the first line under its
+`### Task N:` heading:
+
+```markdown
+**Skills:** load `temper:skill-routing` and follow `Writing` with <skill>, <skill>; reviewers follow `Reviewing`.
+```
+
+The build loop hands each implementer and task reviewer its task's full text, so
+the skills reach them even if the dispatch prompt leaves them out. On a resumed
+build, replace any earlier `**Skills:**` line rather than adding a second. Commit
 the plan following the Commits field. This is a second commit of the plan.
 
 From here on, a question you'd have asked is a decision you make: take the choice
