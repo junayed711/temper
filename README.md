@@ -279,7 +279,10 @@ decision, and carries on. Every decision it made on your behalf is listed in the
 pull request.
 
 The start line also shows the skills the run will use. A skill declared in
-`temper.md` but not installed is settled there, before the run starts.
+`temper.md` but not installed is settled there, before the run starts: install it
+and run the command again in a new session, since a running session doesn't pick
+up new skills, or drop it from this run. Change the Skills line itself on the
+default branch, through your usual process, never in a run's worktree.
 
 A run posts one-line updates as it goes (gates, each
 reviewer, each build task), so there is no need to ask what it's doing.
