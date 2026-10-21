@@ -14,6 +14,8 @@ Turns a clean check into a pull request.
   For a feature, that includes the list from Superpowers' build loop's final
   message — the loop deletes its own ledger when it finishes, so that message is
   the only copy.
+- The **skills** the writers loaded and skipped. For a feature, from the build
+  loop's rulings; otherwise, the caller's notes.
 - For a bug: the **root cause** found. For a refactor: the **baseline** result.
 
 The slug and the default branch are as the `start` skill defines them.
@@ -50,6 +52,8 @@ One short sentence in plain words: what changes, and why it matters.
 
 **Rulings**: every decision made, why, and what it costs if it was wrong.
 
+**Skills**: what the writers loaded, what the reviewers loaded, the gap between them, and any skipped as unavailable — as `temper:skill-routing`'s `What to record` lists.
+
 **Root cause** for a bug, or **baseline** proof for a refactor.
 
 **How it was checked**: gates, each seat's outcome, verify, and what wasn't checked.
@@ -65,7 +69,7 @@ and put the rest in Details.
 
 Heads up is only for what the reviewer has to act on or could be caught out by
 after merging. A security pass that didn't run on a risky path comes first. Then
-the rulings that went against what was asked, or that cost the most if wrong.
+each unresolved skill finding from the verdict. Then the rulings that went against what was asked, or that cost the most if wrong.
 Checks that weren't run, things left as they are, and how the branch got here all
 belong in Details. Skip Heads up when there's nothing for it.
 

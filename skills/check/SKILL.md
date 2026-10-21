@@ -56,6 +56,13 @@ together in a single message.
 `code-review`'s smell baseline is a judgement call by its own definition: report
 each smell, and treat it as not blocking.
 
+Before `code-review` runs, load `temper:skill-routing` and follow `Reviewing`
+against the diff. Give `code-review` the path of each chosen skill's `SKILL.md`
+alongside the spec's path, as an extra standards source. A rule of one of those
+skills, broken, is a documented rule broken: blocking, with the skill named. A
+declared skill that isn't installed, including one uninstalled after the start
+line, is noted under "Not checked", in both modes; the check carries on.
+
 **Security sits only when the branch earns it.** List the changed paths
 (`git diff --name-only <fixed point>...HEAD`) and match them against Risky paths.
 Its outcome is exactly one of:
@@ -88,6 +95,11 @@ A **round** is one fix, the gates, and that scoped recheck. When the same findin
 survives two rounds, the check ends **not clean** with that finding named: a fix
 that needs fixing is bigger than a fix.
 
+The exception is a Standards finding that comes from a skill's rule. When one
+survives two rounds, it stops blocking: record it as an **unresolved skill
+finding**, and the check carries on. A finding a documented repo standard raises,
+and every other finding, keeps the two-round rule.
+
 Done when no blocking finding remains, or a finding has survived two rounds.
 
 ## 4. Verify
@@ -110,6 +122,9 @@ Done when the outcome is recorded.
 - no seat has a blocking finding left
 - verify did not fail
 
+Unresolved skill findings don't stop a verdict being clean; they're reported first
+after Security not run.
+
 Security **not run** doesn't stop a verdict being clean; it is reported first. If
 the last gate run's record is no longer in front of you, run the gates again before
 deciding.
@@ -126,6 +141,8 @@ Write the verdict in this shape:
 - Gates: <command>: pass | fail, …
 - Baseline: every test still passes | <tests that stopped passing> | none
 - Standards: <outcome>
+- Skills: <skills the Standards seat used> | none
+- Unresolved skill findings: <finding — skill, location> … | none
 - Spec: <outcome>
 - Comments: <outcome>
 - Security: ran, clean | ran, with findings | not run — <reason>
