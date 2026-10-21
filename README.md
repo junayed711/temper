@@ -18,7 +18,7 @@ is good enough to propose.
 | Shaping the work | [Matt Pocock's skills](https://github.com/mattpocock/skills) | `grilling`, `research`, `to-spec`, `to-tickets`, `code-review`, `codebase-design` |
 | Building it | [Superpowers](https://github.com/obra/superpowers) | `writing-plans`, `subagent-driven-development`, `systematic-debugging`, `requesting-code-review` |
 | Isolation and security | Claude Code itself | `EnterWorktree`, `security-review` |
-| Gates, refactor steps, review panel, proposing, progress updates | temper | `start`, `baseline`, `reshape`, `check`, `finish`, `progress`, and one agent: `comments-reviewer` |
+| Gates, refactor steps, review panel, proposing, progress updates | temper | `start`, `baseline`, `reshape`, `check`, `finish`, `progress`, `skill-routing`, and one agent: `comments-reviewer` |
 
 The rule behind every choice: if a skill already does the job, use it. temper
 has exactly one agent of its own, because the only existing comments pass
@@ -140,6 +140,7 @@ skills are installed and that `.scratch/` isn't gitignored. Then it proposes
 
 - Gates: pnpm typecheck; pnpm lint; pnpm test
 - Risky paths: packages/auth/** (the ledger skill); packages/db/drizzle/** (none)
+- Skills: packages/ui/** (frontend-design); **/*.sql (sql-style)
 - Verify: pnpm test:live
 - Commits: lowercase subject only, at most 80 characters
 ```
@@ -147,6 +148,10 @@ skills are installed and that `.scratch/` isn't gitignored. Then it proposes
 Commit it, so every worktree has it. temper keeps its settings in its own file, so
 the repo's `CLAUDE.md` never has to mention a workflow. There's no need to run
 `/setup-matt-pocock-skills`: each run tells Matt's skills to write to `.scratch/`.
+
+Skills names which installed skill to use on which files, so the writers follow
+it while building and the reviewers check against it. Setup only proposes skills
+that are installed.
 
 Gates, Verify and Commits each take `none` rather than being left empty, so a
 repo with no gates says so instead of silently passing. Run it again whenever
@@ -273,6 +278,9 @@ run never waits on you: when it hits a judgement call it decides, records the
 decision, and carries on. Every decision it made on your behalf is listed in the
 pull request.
 
+The start line also shows the skills the run will use. A skill declared in
+`temper.md` but not installed is settled there, before the run starts.
+
 A run posts one-line updates as it goes (gates, each
 reviewer, each build task), so there is no need to ask what it's doing.
 
@@ -281,6 +289,8 @@ reviewer, each build task), so there is no need to ask what it's doing.
 Everything stays: the worktree, the branch, every commit, and `.scratch/`. The
 report says what stopped it and where it got to.
 
+- **A declared skill isn't installed.** Found before the start line. Nothing
+  about skills stops a run after it.
 - **A feature** resumes from where it stopped — run `/temper:feature build`
   again in the same worktree. Superpowers keeps a ledger of finished tasks.
 - **A bug or refactor** has no resume; the report tells you what's done.
@@ -563,13 +573,15 @@ Every command except `/review` and `/cleanup` finishes with the same two skills.
 1. **Gates.** Commit first, then run the repo's gate commands, recording the
    commit and each command's output. A red gate stops the run.
 2. **The review panel, all at once.** Standards and spec from `code-review`,
-   given the spec's path; comments from `comments-reviewer`, which follows the
+   given the spec's path, and reviewing against the skills the run routed; comments from `comments-reviewer`, which follows the
    repo's own comment rules; security from `security-review`, only when the
    branch touches a risky path; quality from `requesting-code-review` when
    Superpowers hasn't already run it.
 3. **Fixes.** One fix agent receives every finding. Then back to the gates, and
    only the fixed findings are checked again. Two rounds on the same finding
-   stops the run — a fix that needs fixing is bigger than a fix.
+   stops the run — a fix that needs fixing is bigger than a fix, except a
+   finding that comes from a skill's rule: that is recorded as unresolved and the
+   run carries on.
 4. **Verify** with the repo's own command: pass, fail, or inconclusive.
 5. **Decide.** Clean means the commit still matches the last gate run, the tree
    is clean, every gate passed, nothing in the spec is missing, no documented
@@ -589,8 +601,9 @@ Only when `check` comes out clean:
 1. Write the description while `.scratch/` still exists. It opens with a plain
    summary: one sentence, up to four one-line bullets of what changes, and a
    Heads up of up to three lines for what you have to act on or could be caught
-   out by. The full record (the spec in brief, every decision Superpowers made
-   on your behalf, how it was checked and what wasn't, findings that didn't
+   out by. Unresolved skill findings go there too, right after a security pass
+   that didn't run on a risky path. The full record (the spec in brief, every decision Superpowers made
+   on your behalf, which skills the writers and reviewers used, how it was checked and what wasn't, findings that didn't
    block) sits in a collapsed Details section below. Your own or the repo's pull
    request rules win over this layout.
 2. Delete `.scratch/<slug>/` and commit.
@@ -624,6 +637,9 @@ It never merges.
   to last, attached to the change it explains.
 - **Every run gets a worktree from `main`, with a branch named for the work.**
   Claude Code names worktree branches `worktree-<name>`; temper renames them.
+- **The writer picks its skills, and so does the reviewer, separately.** A
+  reviewer can catch a skill the writer missed. Skills never stop a run after the
+  start line.
 - **Nothing is asked after the start line.** A run that waits on you costs your
   whole day; a wrong decision recorded in the PR costs a review comment.
 - **Fixes go back through the gates.** A fix is a new commit, so the gates you
@@ -673,6 +689,8 @@ not run. These can only be settled by a real run:
    conversation, without `/setup-matt-pocock-skills` having configured a tracker.
 7. A run posts its progress lines unprompted. `/temper:review` on any branch is
    the cheapest check.
+8. Superpowers' controller passes the skills instruction to every implementer
+   and task reviewer from the plan.
 
 ## Not supported
 
@@ -701,6 +719,7 @@ temper/
 │   ├── start/               worktree from main, branch named for the work
 │   ├── baseline/            a refactor's before: the gates, caching off
 │   ├── reshape/             the pin, then the move in green steps
+│   ├── skill-routing/       which skills the writers and reviewers use
 │   ├── check/               gates, review panel, fixes, verify, the decision
 │   ├── finish/              clear .scratch, gate again, open the PR
 │   └── progress/            one-line updates while a run works
