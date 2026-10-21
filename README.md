@@ -353,23 +353,23 @@ you, grey is temper. Where a step can end the run or send work back, its box say
 
 ```mermaid
 flowchart TD
-    wt["Worktree from main<br/>EnterWorktree, branch renamed feat/slug"]:::temper
+    wt["Worktree from main<br/>EnterWorktree, branch renamed feat/slug<br/>stops if a declared skill is missing"]:::temper
     grill["The grill<br/>grilling, research if it stalls<br/>can end the run here"]:::matt
     spec["You type /to-spec<br/>writes .scratch/slug/spec.md"]:::you
     plan["Write the plan<br/>writing-plans"]:::sp
     pin["Pin temper's rule into plan.md<br/>don't use Superpowers' own finish"]:::temper
-    go(["Start line: you okay the task list"]):::temper
+    go(["Start line: you okay the task list and skills"]):::temper
 
     subgraph build["subagent-driven-development"]
         direction LR
-        b1["one subagent per task"]:::sp --> b2["task review"]:::sp --> b3["fix loop"]:::sp --> b4["final review"]:::sp
+        b1["one subagent per task<br/>loads its skills"]:::sp --> b2["task review"]:::sp --> b3["fix loop"]:::sp --> b4["final review"]:::sp
     end
 
     gates["Gates<br/>the repo's own commands"]:::temper
 
     subgraph panel["Review, all at once — any fix goes back to the gates"]
         direction LR
-        r1["standards<br/>code-review"]:::matt
+        r1["standards<br/>code-review, against the skills it picks"]:::matt
         r2["spec<br/>code-review"]:::matt
         r3["comments<br/>comments-reviewer"]:::temper
         r4["security, if risky<br/>security-review"]:::matt
@@ -392,15 +392,15 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    wt["Worktree from main<br/>EnterWorktree, branch renamed fix/slug"]:::temper
+    wt["Worktree from main<br/>EnterWorktree, branch renamed fix/slug<br/>stops if a declared skill is missing"]:::temper
     grill["The grill, briefly<br/>grilling, answers saved as spec.md<br/>can end the run here"]:::matt
-    go(["Start line: nothing is asked after this"]):::temper
+    go(["Start line: shows the skills<br/>nothing is asked after this"]):::temper
     debug["Root cause, then the fix<br/>systematic-debugging<br/>stops after three failed fixes"]:::sp
     gates["Gates<br/>the repo's own commands"]:::temper
 
     subgraph panel["Review, all at once — any fix goes back to the gates"]
         direction LR
-        r1["standards<br/>code-review"]:::matt
+        r1["standards<br/>code-review, against the skills it picks"]:::matt
         r2["spec<br/>code-review"]:::matt
         r3["comments<br/>comments-reviewer"]:::temper
         r4["security, if risky<br/>security-review"]:::matt
@@ -424,17 +424,17 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    wt["Worktree from main<br/>EnterWorktree, branch renamed refactor/slug"]:::temper
+    wt["Worktree from main<br/>EnterWorktree, branch renamed refactor/slug<br/>stops if a declared skill is missing"]:::temper
     base["Baseline<br/>gates green, output recorded<br/>stops if red"]:::temper
     grill["Grill the seam<br/>grilling, codebase-design<br/>stops if it's too wide"]:::matt
     pin["The pin<br/>a test covers everything that moves<br/>stops if something isn't"]:::temper
-    go(["Start line: nothing is asked after this"]):::temper
+    go(["Start line: shows the skills<br/>nothing is asked after this"]):::temper
     move["Move it in steps<br/>inline, tests green after each"]:::temper
     gates["Gates plus every baseline test<br/>the repo's own commands"]:::temper
 
     subgraph panel["Review, all at once — any fix goes back to the gates"]
         direction LR
-        r1["standards<br/>code-review"]:::matt
+        r1["standards<br/>code-review, against the skills it picks"]:::matt
         r2["spec<br/>code-review"]:::matt
         r3["comments<br/>comments-reviewer"]:::temper
         r4["security, if risky<br/>security-review"]:::matt
@@ -460,22 +460,22 @@ Planned once, then one ticket per pull request until the plan is gone.
 
 ```mermaid
 flowchart TD
-    wt["Worktree from main<br/>EnterWorktree, branch renamed refactor/effort"]:::temper
+    wt["Worktree from main<br/>EnterWorktree, branch renamed refactor/effort<br/>stops if a declared skill is missing"]:::temper
     grill["Grill the target shape<br/>grilling, codebase-design<br/>stops if one run is enough"]:::matt
     tickets(["You type /to-tickets<br/>expand, migrate in batches, contract"]):::you
     publish["Publish<br/>checks each ticket lands alone, opens the plan's PR"]:::temper
     mergeplan(["You merge the plan"]):::you
     next["next effort<br/>first ticket nothing waits on, confirmed with you"]:::temper
-    wt2["Worktree from main<br/>branch refactor/effort-NN"]:::temper
+    wt2["Worktree from main<br/>branch refactor/effort-NN<br/>stops if a declared skill is missing"]:::temper
     base["Baseline<br/>gates green, output recorded"]:::temper
     pin["The pin<br/>a test covers everything that moves"]:::temper
-    go(["Start line: nothing is asked after this"]):::temper
+    go(["Start line: shows the skills<br/>nothing is asked after this"]):::temper
     move["Move what the ticket names<br/>tests green after each step"]:::temper
     mark["Mark the ticket done<br/>or delete the plan on the last one"]:::temper
 
     subgraph panel["Gates, review and verify — as /temper:refactor"]
         direction LR
-        r1["standards<br/>code-review"]:::matt
+        r1["standards<br/>code-review, against the skills it picks"]:::matt
         r2["spec<br/>code-review"]:::matt
         r3["comments<br/>comments-reviewer"]:::temper
         r4["security, if risky<br/>security-review"]:::matt
@@ -506,7 +506,7 @@ flowchart TD
 
     subgraph panel["Review, all at once — findings reported, never fixed"]
         direction LR
-        r1["standards<br/>code-review"]:::matt
+        r1["standards<br/>code-review, against the skills it picks"]:::matt
         r2["spec<br/>code-review"]:::matt
         r3["comments<br/>comments-reviewer"]:::temper
         r4["security, if risky<br/>security-review"]:::matt
