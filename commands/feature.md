@@ -110,9 +110,9 @@ finish takes the place of `superpowers:finishing-a-development-branch` here.
 While it runs, post a progress line as each task starts, as its review comes back,
 and as each fix starts, in the shape `build: task <n>/<total> — <what>`.
 
-Every implementer dispatch tells the implementer to load `temper:skill-routing` and
-follow `Writing`, with its task's line from the skill list below. Every
-task-reviewer dispatch tells the reviewer to load `temper:skill-routing` and follow
+When you dispatch an implementer, put in its prompt: load `temper:skill-routing`,
+follow `Writing`, with this task's line from `### Skills` below. When you dispatch
+a task reviewer, put in its prompt: load `temper:skill-routing` and follow
 `Reviewing`. Neither may stop the build over a skill. Your final list of rulings
 includes, per task, the skills the implementer loaded and skipped and the skills its
 reviewer loaded.
@@ -142,8 +142,8 @@ Then ask: *Start the build? Nothing is asked from here until the pull request.*
 Change the plan as they ask, and show the tasks again. Changes to the skill list
 go through the same loop.
 
-Once they say go, replace the placeholder under the plan's `### Skills` heading
-with the agreed list, and commit the plan following the Commits field. This is a
+Once they say go, set the agreed list under the plan's `### Skills` heading
+(replacing the placeholder, or the earlier list on a resumed build), and commit the plan following the Commits field. This is a
 second commit of the plan.
 
 From here on, a question you'd have asked is a decision you make: take the choice
