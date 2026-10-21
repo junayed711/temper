@@ -36,7 +36,14 @@ the whole run outside a feature, list:
 
 - the declared skills whose globs match the files it names, and
 - the installed skills that fit its language, packages, context and kind of
-  change, picked from the spec and the task.
+  change, picked from the spec, the task and the project's stack.
+
+The **stack** is what the repo's own files say it uses. Read them before you pick,
+since a spec rarely names its frameworks: the dependencies in each `package.json`
+or other manifest (`pyproject.toml`, `go.mod`, `Cargo.toml`, `Gemfile` and the
+like), and any framework config at the root, such as `components.json`,
+`tailwind.config.*`, `next.config.*`, `tsconfig.json`. A framework found there is
+reason enough to pick its skill.
 
 For a feature, show one line per task:
 
@@ -85,8 +92,9 @@ report file.
 
 ## Reviewing
 
-Choose skills from the diff yourself; don't take the writer's list. Add every
-declared skill whose glob matches a changed file.
+Choose skills from the diff and the project's stack, as `The skill list` defines
+it, yourself; don't take the writer's list. Add every declared skill whose glob
+matches a changed file.
 
 Judge the code and its tests against each. A finding from a skill names the skill
 and the rule.
