@@ -24,10 +24,8 @@ A declared skill **applies** to a file its glob matches.
 ## Installed
 
 A skill is **installed** when it is in the session's list of available skills.
-Check every skill the field names. Return each one that is missing, with its fix:
-install it and start a new session, since a running session doesn't pick up new
-skills; or edit the field on the default branch through the user's usual process,
-never in a run's worktree.
+Check every skill the field names. Return each one that is missing, with its fixes
+from `Settling a missing skill`.
 
 This section never decides whether to stop. The caller does.
 
@@ -47,6 +45,20 @@ Task N: <skill>, <skill> (declared: <skill>)
 ```
 
 Mark any declared skill that isn't installed as `missing`.
+
+## Settling a missing skill
+
+A declared skill that isn't installed has two fixes:
+
+- install it, then start a new session, since a running session doesn't pick up
+  new skills, and run the command again; or
+- edit the Skills field on the default branch through the user's usual process,
+  never in a run's worktree.
+
+At a start line there is a third: drop it from this run's skill list, and note
+that for the pull request. When the user installs it instead, the run stops there
+and says its worktree is kept. The start line is the last point a run stops for a
+skill.
 
 ## Writing
 

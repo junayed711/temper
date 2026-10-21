@@ -33,10 +33,8 @@ Check all five. Report every one that fails, each with its fix, then stop.
 - **Clean tree** — `git status --porcelain` prints nothing. Fix: commit or stash.
 - **Configured** — `.claude/temper.md` exists. Fix: `/temper:setup`.
 - **Declared skills installed** — load `temper:skill-routing` and follow
-  `Installed`. A `.claude/temper.md` with no Skills line passes. Fix: install each
-  missing skill and start a new session, since a running session doesn't pick up
-  new skills; or edit the Skills line on the default branch through your usual
-  process.
+  `Installed`. A `.claude/temper.md` with no Skills line passes. Fix: each missing
+  skill's fixes, from `Settling a missing skill`.
 
 Done when all five pass.
 
