@@ -101,8 +101,8 @@ survives two rounds, it stops blocking: record it as an **unresolved skill
 finding**, and the check carries on. A finding a documented repo standard raises,
 and every other finding, keeps the two-round rule.
 
-Done when no blocking finding remains, or a finding other than a skill finding
-has survived two rounds.
+Done when no blocking finding remains — an unresolved skill finding no longer
+blocks — or a finding other than a skill finding has survived two rounds.
 
 ## 4. Verify
 
