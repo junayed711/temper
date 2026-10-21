@@ -45,6 +45,10 @@ like), and any framework config at the root, such as `components.json`,
 `tailwind.config.*`, `next.config.*`, `tsconfig.json`. A framework found there is
 reason enough to pick its skill.
 
+Keep each line to at most four skills. The declared ones always go in; fill the
+rest with the strongest matches, the stack's frameworks first. A declared skill
+over the cap still goes in, but nothing picked joins it.
+
 For a feature, show one line per task:
 
 ```
