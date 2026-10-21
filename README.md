@@ -576,7 +576,8 @@ Every command except `/review` and `/cleanup` finishes with the same two skills.
 1. **Gates.** Commit first, then run the repo's gate commands, recording the
    commit and each command's output. A red gate stops the run.
 2. **The review panel, all at once.** Standards and spec from `code-review`,
-   given the spec's path, and reviewing against the skills the run routed; comments from `comments-reviewer`, which follows the
+   given the spec's path and the skills the Standards seat picks from the diff,
+   plus the declared ones; comments from `comments-reviewer`, which follows the
    repo's own comment rules; security from `security-review`, only when the
    branch touches a risky path; quality from `requesting-code-review` when
    Superpowers hasn't already run it.
