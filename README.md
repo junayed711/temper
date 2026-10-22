@@ -362,7 +362,7 @@ flowchart TD
 
     subgraph build["subagent-driven-development"]
         direction LR
-        b1["one subagent per task<br/>loads its skills"]:::sp --> b2["task review"]:::sp --> b3["fix loop"]:::sp --> b4["final review"]:::sp
+        b1["one subagent per task<br/>loads its skills, tests first"]:::sp --> b2["task review"]:::sp --> b3["fix loop"]:::sp --> b4["final review"]:::sp
     end
 
     gates["Gates<br/>the repo's own commands"]:::temper
@@ -395,7 +395,7 @@ flowchart TD
     wt["Worktree from main<br/>EnterWorktree, branch renamed fix/slug<br/>stops if a declared skill is missing"]:::temper
     grill["The grill, briefly<br/>grilling, answers saved as spec.md<br/>can end the run here"]:::matt
     go(["Start line: shows the skills<br/>nothing is asked after this"]):::temper
-    debug["Root cause, then the fix<br/>systematic-debugging<br/>stops after three failed fixes"]:::sp
+    debug["Root cause, then the fix<br/>systematic-debugging, failing test first<br/>stops after three failed fixes"]:::sp
     gates["Gates<br/>the repo's own commands"]:::temper
 
     subgraph panel["Review, all at once — any fix goes back to the gates"]
