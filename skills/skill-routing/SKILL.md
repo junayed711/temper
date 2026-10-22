@@ -86,7 +86,9 @@ Before writing code or tests, load:
 
 - every skill on the agreed list for this work,
 - every declared skill whose glob matches a file you touch, and
-- any further installed skill that fits what you find as you go.
+- any further installed skill that fits what you find as you go, only while the
+  task's total stays at four, not counting declared skills or
+  `superpowers:test-driven-development`.
 
 Write the code and its tests following them.
 
