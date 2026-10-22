@@ -23,7 +23,7 @@ that fails. Every step below that says "default branch" means this.
 
 ## 1. Check the repo is ready
 
-Check all four. Report every one that fails, each with its fix, then stop.
+Check all five. Report every one that fails, each with its fix, then stop.
 
 - **Main checkout** — `git rev-parse --git-dir` and
   `git rev-parse --git-common-dir` resolve to the same path. Fix: start again
@@ -32,8 +32,11 @@ Check all four. Report every one that fails, each with its fix, then stop.
   to it.
 - **Clean tree** — `git status --porcelain` prints nothing. Fix: commit or stash.
 - **Configured** — `.claude/temper.md` exists. Fix: `/temper:setup`.
+- **Declared skills installed** — load `temper:skill-routing` and follow
+  `Installed`. A `.claude/temper.md` with no Skills line passes. Fix: each missing
+  skill's fixes, from `Settling a missing skill`.
 
-Done when all four pass.
+Done when all five pass.
 
 ## 2. Name the work
 

@@ -36,7 +36,12 @@ Done when everything that moves has a test, and both files are committed.
 
 ## 2. The start line
 
-Tell the user: *Start line — nothing is asked from here until the pull request.*
+Load `temper:skill-routing` and follow `The skill list` against the spec, for the
+whole run. Show the list. Drop any skill marked `missing` from this run's list,
+the third fix in `Settling a missing skill`, and note it for the pull request; the
+run carries on.
+
+Then tell the user: *Start line — nothing is asked from here until the pull request.*
 
 From here on, a question you'd have asked is a decision you make: take the choice
 the spec supports best, note it for the pull request, and carry on.
@@ -53,6 +58,10 @@ With the scope `ticket`, only the moves the spec names, in that same order. A
 ticket that deletes the old shape first confirms nothing still calls it; if
 something does, the ticket isn't ready, and the run ends saying which callers are
 left.
+
+Before the first move, follow `Writing` from `temper:skill-routing` with the agreed
+list, for every step, including tests the step adds. Note the skills loaded and
+skipped with the decisions for the pull request.
 
 After each step, run the Gates and commit following the Commits field. A step that
 stays red after a second attempt ends the run: revert it, and report which steps

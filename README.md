@@ -18,7 +18,7 @@ is good enough to propose.
 | Shaping the work | [Matt Pocock's skills](https://github.com/mattpocock/skills) | `grilling`, `research`, `to-spec`, `to-tickets`, `code-review`, `codebase-design` |
 | Building it | [Superpowers](https://github.com/obra/superpowers) | `writing-plans`, `subagent-driven-development`, `systematic-debugging`, `requesting-code-review` |
 | Isolation and security | Claude Code itself | `EnterWorktree`, `security-review` |
-| Gates, refactor steps, review panel, proposing, progress updates | temper | `start`, `baseline`, `reshape`, `check`, `finish`, `progress`, and one agent: `comments-reviewer` |
+| Gates, refactor steps, review panel, proposing, progress updates | temper | `start`, `baseline`, `reshape`, `check`, `finish`, `progress`, `skill-routing`, and one agent: `comments-reviewer` |
 
 The rule behind every choice: if a skill already does the job, use it. temper
 has exactly one agent of its own, because the only existing comments pass
@@ -142,11 +142,16 @@ skills are installed and that `.scratch/` isn't gitignored. Then it proposes
 - Risky paths: packages/auth/** (the ledger skill); packages/db/drizzle/** (none)
 - Verify: pnpm test:live
 - Commits: lowercase subject only, at most 80 characters
+- Skills: packages/ui/** (frontend-design); **/*.sql (sql-style)
 ```
 
 Commit it, so every worktree has it. temper keeps its settings in its own file, so
 the repo's `CLAUDE.md` never has to mention a workflow. There's no need to run
 `/setup-matt-pocock-skills`: each run tells Matt's skills to write to `.scratch/`.
+
+Skills names which installed skill to use on which files, so the writers follow
+it while building and the reviewers check against it. Setup only proposes skills
+that are installed.
 
 Gates, Verify and Commits each take `none` rather than being left empty, so a
 repo with no gates says so instead of silently passing. Run it again whenever
@@ -273,6 +278,12 @@ run never waits on you: when it hits a judgement call it decides, records the
 decision, and carries on. Every decision it made on your behalf is listed in the
 pull request.
 
+The start line also shows the skills the run will use. A skill declared in
+`temper.md` but not installed is settled there, before the run starts: install it
+and run the command again in a new session, since a running session doesn't pick
+up new skills, or drop it from this run. Change the Skills line itself on the
+default branch, through your usual process, never in a run's worktree.
+
 A run posts one-line updates as it goes (gates, each
 reviewer, each build task), so there is no need to ask what it's doing.
 
@@ -281,6 +292,8 @@ reviewer, each build task), so there is no need to ask what it's doing.
 Everything stays: the worktree, the branch, every commit, and `.scratch/`. The
 report says what stopped it and where it got to.
 
+- **A declared skill isn't installed.** Found before the start line. Nothing
+  about skills stops a run after it.
 - **A feature** resumes from where it stopped — run `/temper:feature build`
   again in the same worktree. Superpowers keeps a ledger of finished tasks.
 - **A bug or refactor** has no resume; the report tells you what's done.
@@ -340,23 +353,23 @@ you, grey is temper. Where a step can end the run or send work back, its box say
 
 ```mermaid
 flowchart TD
-    wt["Worktree from main<br/>EnterWorktree, branch renamed feat/slug"]:::temper
+    wt["Worktree from main<br/>EnterWorktree, branch renamed feat/slug<br/>stops if a declared skill is missing"]:::temper
     grill["The grill<br/>grilling, research if it stalls<br/>can end the run here"]:::matt
     spec["You type /to-spec<br/>writes .scratch/slug/spec.md"]:::you
     plan["Write the plan<br/>writing-plans"]:::sp
     pin["Pin temper's rule into plan.md<br/>don't use Superpowers' own finish"]:::temper
-    go(["Start line: you okay the task list"]):::temper
+    go(["Start line: you okay the task list and skills"]):::temper
 
     subgraph build["subagent-driven-development"]
         direction LR
-        b1["one subagent per task"]:::sp --> b2["task review"]:::sp --> b3["fix loop"]:::sp --> b4["final review"]:::sp
+        b1["one subagent per task<br/>loads its skills, tests first"]:::sp --> b2["task review"]:::sp --> b3["fix loop"]:::sp --> b4["final review"]:::sp
     end
 
     gates["Gates<br/>the repo's own commands"]:::temper
 
     subgraph panel["Review, all at once — any fix goes back to the gates"]
         direction LR
-        r1["standards<br/>code-review"]:::matt
+        r1["standards<br/>code-review, against the skills it picks"]:::matt
         r2["spec<br/>code-review"]:::matt
         r3["comments<br/>comments-reviewer"]:::temper
         r4["security, if risky<br/>security-review"]:::matt
@@ -379,15 +392,15 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    wt["Worktree from main<br/>EnterWorktree, branch renamed fix/slug"]:::temper
+    wt["Worktree from main<br/>EnterWorktree, branch renamed fix/slug<br/>stops if a declared skill is missing"]:::temper
     grill["The grill, briefly<br/>grilling, answers saved as spec.md<br/>can end the run here"]:::matt
-    go(["Start line: nothing is asked after this"]):::temper
-    debug["Root cause, then the fix<br/>systematic-debugging<br/>stops after three failed fixes"]:::sp
+    go(["Start line: shows the skills<br/>nothing is asked after this"]):::temper
+    debug["Root cause, then the fix<br/>systematic-debugging, failing test first<br/>stops after three failed fixes"]:::sp
     gates["Gates<br/>the repo's own commands"]:::temper
 
     subgraph panel["Review, all at once — any fix goes back to the gates"]
         direction LR
-        r1["standards<br/>code-review"]:::matt
+        r1["standards<br/>code-review, against the skills it picks"]:::matt
         r2["spec<br/>code-review"]:::matt
         r3["comments<br/>comments-reviewer"]:::temper
         r4["security, if risky<br/>security-review"]:::matt
@@ -411,17 +424,17 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    wt["Worktree from main<br/>EnterWorktree, branch renamed refactor/slug"]:::temper
+    wt["Worktree from main<br/>EnterWorktree, branch renamed refactor/slug<br/>stops if a declared skill is missing"]:::temper
     base["Baseline<br/>gates green, output recorded<br/>stops if red"]:::temper
     grill["Grill the seam<br/>grilling, codebase-design<br/>stops if it's too wide"]:::matt
     pin["The pin<br/>a test covers everything that moves<br/>stops if something isn't"]:::temper
-    go(["Start line: nothing is asked after this"]):::temper
+    go(["Start line: shows the skills<br/>nothing is asked after this"]):::temper
     move["Move it in steps<br/>inline, tests green after each"]:::temper
     gates["Gates plus every baseline test<br/>the repo's own commands"]:::temper
 
     subgraph panel["Review, all at once — any fix goes back to the gates"]
         direction LR
-        r1["standards<br/>code-review"]:::matt
+        r1["standards<br/>code-review, against the skills it picks"]:::matt
         r2["spec<br/>code-review"]:::matt
         r3["comments<br/>comments-reviewer"]:::temper
         r4["security, if risky<br/>security-review"]:::matt
@@ -447,22 +460,22 @@ Planned once, then one ticket per pull request until the plan is gone.
 
 ```mermaid
 flowchart TD
-    wt["Worktree from main<br/>EnterWorktree, branch renamed refactor/effort"]:::temper
+    wt["Worktree from main<br/>EnterWorktree, branch renamed refactor/effort<br/>stops if a declared skill is missing"]:::temper
     grill["Grill the target shape<br/>grilling, codebase-design<br/>stops if one run is enough"]:::matt
     tickets(["You type /to-tickets<br/>expand, migrate in batches, contract"]):::you
     publish["Publish<br/>checks each ticket lands alone, opens the plan's PR"]:::temper
     mergeplan(["You merge the plan"]):::you
     next["next effort<br/>first ticket nothing waits on, confirmed with you"]:::temper
-    wt2["Worktree from main<br/>branch refactor/effort-NN"]:::temper
+    wt2["Worktree from main<br/>branch refactor/effort-NN<br/>stops if a declared skill is missing"]:::temper
     base["Baseline<br/>gates green, output recorded"]:::temper
     pin["The pin<br/>a test covers everything that moves"]:::temper
-    go(["Start line: nothing is asked after this"]):::temper
+    go(["Start line: shows the skills<br/>nothing is asked after this"]):::temper
     move["Move what the ticket names<br/>tests green after each step"]:::temper
     mark["Mark the ticket done<br/>or delete the plan on the last one"]:::temper
 
     subgraph panel["Gates, review and verify — as /temper:refactor"]
         direction LR
-        r1["standards<br/>code-review"]:::matt
+        r1["standards<br/>code-review, against the skills it picks"]:::matt
         r2["spec<br/>code-review"]:::matt
         r3["comments<br/>comments-reviewer"]:::temper
         r4["security, if risky<br/>security-review"]:::matt
@@ -493,7 +506,7 @@ flowchart TD
 
     subgraph panel["Review, all at once — findings reported, never fixed"]
         direction LR
-        r1["standards<br/>code-review"]:::matt
+        r1["standards<br/>code-review, against the skills it picks"]:::matt
         r2["spec<br/>code-review"]:::matt
         r3["comments<br/>comments-reviewer"]:::temper
         r4["security, if risky<br/>security-review"]:::matt
@@ -563,13 +576,16 @@ Every command except `/review` and `/cleanup` finishes with the same two skills.
 1. **Gates.** Commit first, then run the repo's gate commands, recording the
    commit and each command's output. A red gate stops the run.
 2. **The review panel, all at once.** Standards and spec from `code-review`,
-   given the spec's path; comments from `comments-reviewer`, which follows the
+   given the spec's path and the skills the Standards seat picks from the diff,
+   plus the declared ones; comments from `comments-reviewer`, which follows the
    repo's own comment rules; security from `security-review`, only when the
    branch touches a risky path; quality from `requesting-code-review` when
    Superpowers hasn't already run it.
 3. **Fixes.** One fix agent receives every finding. Then back to the gates, and
    only the fixed findings are checked again. Two rounds on the same finding
-   stops the run — a fix that needs fixing is bigger than a fix.
+   stops the run — a fix that needs fixing is bigger than a fix, except a
+   finding that comes from a skill's rule: that is recorded as unresolved and the
+   run carries on.
 4. **Verify** with the repo's own command: pass, fail, or inconclusive.
 5. **Decide.** Clean means the commit still matches the last gate run, the tree
    is clean, every gate passed, nothing in the spec is missing, no documented
@@ -589,8 +605,10 @@ Only when `check` comes out clean:
 1. Write the description while `.scratch/` still exists. It opens with a plain
    summary: one sentence, up to four one-line bullets of what changes, and a
    Heads up of up to three lines for what you have to act on or could be caught
-   out by. The full record (the spec in brief, every decision Superpowers made
-   on your behalf, how it was checked and what wasn't, findings that didn't
+   out by. Unresolved skill findings go there too, right after a security pass
+   that didn't run on a risky path. The full record (the spec in brief, every
+   decision Superpowers made on your behalf, which skills the writers and
+   reviewers used, how it was checked and what wasn't, findings that didn't
    block) sits in a collapsed Details section below. Your own or the repo's pull
    request rules win over this layout.
 2. Delete `.scratch/<slug>/` and commit.
@@ -624,6 +642,12 @@ It never merges.
   to last, attached to the change it explains.
 - **Every run gets a worktree from `main`, with a branch named for the work.**
   Claude Code names worktree branches `worktree-<name>`; temper renames them.
+- **The writer picks its skills, and so does the reviewer, separately.** A
+  reviewer can catch a skill the writer missed. Skills never stop a run after the
+  start line.
+- **Tests are written first.** Any agent writing a test loads Superpowers'
+  `test-driven-development` and watches the test fail before writing the code,
+  and reviewers judge the tests against the same skill, on what the diff shows.
 - **Nothing is asked after the start line.** A run that waits on you costs your
   whole day; a wrong decision recorded in the PR costs a review comment.
 - **Fixes go back through the gates.** A fix is a new commit, so the gates you
@@ -673,6 +697,8 @@ not run. These can only be settled by a real run:
    conversation, without `/setup-matt-pocock-skills` having configured a tracker.
 7. A run posts its progress lines unprompted. `/temper:review` on any branch is
    the cheapest check.
+8. Superpowers' controller passes the skills instruction to every implementer
+   and task reviewer from the plan.
 
 ## Not supported
 
@@ -701,6 +727,7 @@ temper/
 │   ├── start/               worktree from main, branch named for the work
 │   ├── baseline/            a refactor's before: the gates, caching off
 │   ├── reshape/             the pin, then the move in green steps
+│   ├── skill-routing/       which skills the writers and reviewers use
 │   ├── check/               gates, review panel, fixes, verify, the decision
 │   ├── finish/              clear .scratch, gate again, open the PR
 │   └── progress/            one-line updates while a run works

@@ -14,6 +14,9 @@ Turns a clean check into a pull request.
   For a feature, that includes the list from Superpowers' build loop's final
   message — the loop deletes its own ledger when it finishes, so that message is
   the only copy.
+- The **skills**: the writers' skills loaded and skipped, and for a feature the
+  per-task reviewers' skills loaded. For a feature, both from the build loop's
+  `Task N: skills` lines; otherwise, the writers' from the caller's notes.
 - For a bug: the **root cause** found. For a refactor: the **baseline** result.
 
 The slug and the default branch are as the `start` skill defines them.
@@ -50,6 +53,12 @@ One short sentence in plain words: what changes, and why it matters.
 
 **Rulings**: every decision made, why, and what it costs if it was wrong.
 
+**Skills**: load `temper:skill-routing` and follow `What to record`. The writers'
+skills are the ones the caller gave you for writers. The reviewers' skills are the
+per-task reviewers' the caller gave you, plus the verdict's Skills line. The gap is
+the reviewers' skills that aren't among the writers'. Include each unresolved
+skill finding that didn't fit Heads up.
+
 **Root cause** for a bug, or **baseline** proof for a refactor.
 
 **How it was checked**: gates, each seat's outcome, verify, and what wasn't checked.
@@ -65,9 +74,10 @@ and put the rest in Details.
 
 Heads up is only for what the reviewer has to act on or could be caught out by
 after merging. A security pass that didn't run on a risky path comes first. Then
-the rulings that went against what was asked, or that cost the most if wrong.
-Checks that weren't run, things left as they are, and how the branch got here all
-belong in Details. Skip Heads up when there's nothing for it.
+each unresolved skill finding from the verdict. Then the rulings that went against
+what was asked, or that cost the most if wrong. Checks that weren't run, things
+left as they are, and how the branch got here all belong in Details. Skip Heads up
+when there's nothing for it.
 
 The title is short, plain and names the change. Write the file outside the repo:
 `mktemp`.

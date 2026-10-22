@@ -226,7 +226,8 @@ Done when `check` has written its verdict.
 ### C8. Finish
 
 Load `temper:finish` with the kind `refactor`, the verdict, the baseline result,
-and every decision you noted after the start line — the first of them being which
-ticket this was, and whether its pull request deletes the plan.
+the skills loaded and skipped, and every decision you noted after the start line —
+the first of them being which ticket this was, and whether its pull request deletes
+the plan.
 
 Done when `finish` has reported a pull request, or why there isn't one.
