@@ -647,7 +647,7 @@ It never merges.
   start line.
 - **Tests are written first.** Any agent writing a test loads Superpowers'
   `test-driven-development` and watches the test fail before writing the code,
-  and reviewers judge the tests against the same skill.
+  and reviewers judge the tests against the same skill, on what the diff shows.
 - **Nothing is asked after the start line.** A run that waits on you costs your
   whole day; a wrong decision recorded in the PR costs a review comment.
 - **Fixes go back through the gates.** A fix is a new commit, so the gates you

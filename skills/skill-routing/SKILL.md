@@ -111,6 +111,12 @@ cap.
 Judge the code and its tests against each. A finding from a skill names the skill
 and the rule.
 
+Judge tests against `superpowers:test-driven-development` only on what the diff
+shows: new behaviour has a test, each test exercises real behaviour rather than
+mocks, and each test could fail. Its process rules, such as writing the test first
+and watching it fail, are out of scope for a review. In a refactor the behaviour
+already exists, so a new test that passed from the start is not a finding.
+
 A declared skill that isn't installed is reported as not checked, in words, naming
 the skill. It never stops the review.
 
