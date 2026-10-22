@@ -140,8 +140,8 @@ Show the user the plan's tasks — the `### Task N:` headings, one line each.
 Before asking the start-line question, load `temper:skill-routing` and follow
 `The skill list`, against the spec and the plan's tasks. Show the list below the
 tasks. If a declared skill is `missing`, say so, and settle it by following
-`Settling a missing skill`. Run again in a new session, `/temper:feature build`
-resumes here.
+`Settling a missing skill`. When the user installs it, tell them to start a new
+session and run `/temper:feature build` there, which resumes at this step.
 
 Then ask: *Start the build? Nothing is asked from here until the pull request.*
 Change the plan as they ask, and show the tasks again. Changes to the skill list
