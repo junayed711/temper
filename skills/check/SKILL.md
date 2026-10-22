@@ -89,8 +89,9 @@ that seat's own rating.
 
 If any finding is blocking, send one general-purpose agent every blocking finding,
 each with its seat and location. Its brief: fix each one with the smallest change
-that addresses it, keep to the files the findings name, run the tests covering what
-it changed, and commit following the Commits field.
+that addresses it, keep to the files the findings name, load
+`temper:skill-routing` and follow `Writing` for the code and tests it changes, run
+the tests covering what it changed, and commit following the Commits field.
 
 Then go back to step 1. On the next panel, each seat that raised a fixed finding
 checks only that finding against the fix, and reports anything new the fix itself
