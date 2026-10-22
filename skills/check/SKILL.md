@@ -59,7 +59,11 @@ each smell, and treat it as not blocking.
 Before `code-review` runs, load `temper:skill-routing` and follow `Reviewing`
 against the diff only to choose the skills; `code-review` judges against them.
 Give `code-review` the path of each chosen skill's `SKILL.md` alongside the spec's
-path, as an extra standards source. A rule of one of those skills, broken, is a
+path, as an extra standards source. To find a skill's file, load it with the Skill
+tool and use the base directory it reports; failing that, look for
+`skills/<name>/SKILL.md` under `.claude/skills`, `~/.claude/skills` and
+`~/.claude/plugins/cache`. A skill whose file you can't find goes under "Not
+checked" and isn't listed as used. A rule of one of those skills, broken, is a
 documented rule broken: blocking, with the skill named. A declared skill that
 isn't installed, including one uninstalled after the start line, is noted under
 "Not checked", in both modes; the check carries on.
