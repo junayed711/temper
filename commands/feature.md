@@ -115,11 +115,11 @@ and as each fix starts, in the shape `build: task <n>/<total> — <what>`.
 When you dispatch an implementer, put in its prompt: load `temper:skill-routing`,
 follow `Writing`, with this task's line from `### Skills` below. When you dispatch
 a task reviewer, put in its prompt: load `temper:skill-routing` and follow
-`Reviewing`. Neither may stop the build over a skill. After each task review, add
-a ledger line
+`Reviewing`. Neither may stop the build over a skill. When a task completes, add
+one ledger line for it,
 `Task N: skills — writer loaded …, skipped …; reviewer loaded …`, from the
-implementer's reply and the first line of the reviewer's report. Copy those lines
-into your final message alongside the rulings.
+`Skills:` lines in the implementer's reply and the reviewer's report. Copy those
+lines into your final message alongside the rulings.
 
 ### Skills
 

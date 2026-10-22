@@ -9,6 +9,9 @@ The skills that fit the work are loaded when code is written and again when it i
 reviewed. The command or skill that loaded you names the section it needs; read
 that one.
 
+Reading `.claude/temper.md` and the stack files, as `The skill list` names them, is
+part of the job, even when your prompt template says not to crawl the codebase.
+
 ## The Skills field
 
 `.claude/temper.md` declares skills on one line:
@@ -96,9 +99,9 @@ start; follow the skill for what makes the test good.
 A skill that turns out not to be available is skipped: carry on as you would
 without it, and note it. Never stop for a skill.
 
-Report every skill you loaded and every one you skipped as one line in your short
-reply or status, `Skills: loaded <skill>, …; skipped <skill>, …`, not only in a
-report file.
+Report every skill you loaded and every one you skipped as one line anywhere in
+your short reply or status, starting `Skills:`, as in
+`Skills: loaded <skill>, …; skipped <skill>, …`, not only in a report file.
 
 ## Reviewing
 
@@ -120,8 +123,8 @@ already exists, so a new test that passed from the start is not a finding.
 A declared skill that isn't installed is reported as not checked, in words, naming
 the skill. It never stops the review.
 
-State the skills you loaded, or chose for another reviewer, as the first line of
-your report.
+State the skills you loaded, or chose for another reviewer, as one line anywhere
+in your report, starting `Skills:`.
 
 ## What to record
 
