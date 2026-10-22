@@ -64,6 +64,10 @@ Outside a feature, show one line for the whole run:
 Run: <skill>, <skill> (declared: <skill>)
 ```
 
+A bug or refactor spec often names no files. List every declared skill whose glob
+matches a file the spec names, or, when it names none, the declared skills that
+plausibly apply.
+
 Mark any declared skill that isn't installed as `missing`.
 
 ## Settling a missing skill
