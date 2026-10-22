@@ -87,6 +87,12 @@ Before writing code or tests, load:
 
 Write the code and its tests following them.
 
+Whenever you write or change a test, also load
+`superpowers:test-driven-development`, outside the four-skill cap. Write each test
+before the code it covers and watch it fail for the reason you expect, then make
+it pass. In a refactor the behaviour already exists, so a new test passes from the
+start; follow the skill for what makes the test good.
+
 A skill that turns out not to be available is skipped: carry on as you would
 without it, and note it. Never stop for a skill.
 
@@ -98,7 +104,9 @@ report file.
 
 Choose skills from the diff and the project's stack, as `The skill list` defines
 it, yourself; don't take the writer's list. Add every declared skill whose glob
-matches a changed file.
+matches a changed file. When the diff adds or changes tests, or adds behaviour
+with no test, add `superpowers:test-driven-development`, outside the four-skill
+cap.
 
 Judge the code and its tests against each. A finding from a skill names the skill
 and the rule.
