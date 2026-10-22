@@ -83,8 +83,9 @@ Commit the spec and research notes following the Commits field of the repo's
 
 If `.scratch/<slug>/plan.md` already exists, this is a resumed build. If the plan
 has no `### Skills` heading, or its "Handing back to temper" section has no
-paragraph about `temper:skill-routing`, put B3's section in place of that section
-and commit the plan following the Commits field. Then go to B4.
+paragraph about `temper:skill-routing`, put B3's section in place of that section;
+a plan with no such section gets B3's section added after its header. Commit the
+plan following the Commits field. Then go to B4.
 
 Done when the spec is committed on `feat/<slug>` and the tree is clean.
 
