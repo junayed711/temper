@@ -43,7 +43,9 @@ Done when the user has confirmed the four answers and `spec.md` is committed.
 ## 3. The start line
 
 Load `temper:skill-routing` and follow `The skill list` against the spec, for the
-whole run. Show the list.
+whole run. Show the list. Drop any skill marked `missing` from this run's list,
+the third fix in `Settling a missing skill`, and note it for the pull request; the
+run carries on.
 
 Then tell the user: *Start line — nothing is asked from here until the pull request.*
 
